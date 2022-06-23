@@ -1,0 +1,23 @@
+{
+    "name": "anshu-krishna/page-server",
+    "description": "A light-weight framework for serving webpages based on templates",
+    "type": "framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anshu Krishna",
+            "email": "anshu.krishna5@gmail.com"
+        }
+    ],
+    "version": "1.0",
+    "require": {
+        "php": ">=8.1",
+        "anshu-krishna/php-utilities": "^1.1",
+        "anshu-krishna/data-validator": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "KPS\\": "src/"
+        }
+    }
+}

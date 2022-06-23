@@ -1,0 +1,29 @@
+{
+    "name": "anshu-krishna/example-page-server",
+    "description": "Examples for using Page-Server",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anshu Krishna",
+            "email": "anshu.krishna5@gmail.com"
+        }
+    ],
+    "version": "1.0",
+    "repositories": [{
+        "type": "path",
+        "url": "../",
+        "options": {
+            "symlink": true
+        }
+    }],
+    "require": {
+        "php": ">=8.1",
+        "anshu-krishna/page-server" : "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "APP\\" : "src/"
+        }
+    }
+}
