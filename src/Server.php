@@ -1,6 +1,8 @@
 <?php
 namespace KPS;
 
+use Krishna\Utilities\Debugger;
+use Krishna\Utilities\ErrorReporting;
 use Krishna\Utilities\JSON;
 
 final class Server {
@@ -9,18 +11,10 @@ final class Server {
 	private static array $request = [ "path" => null, "query" => null ];
 	private static ?object $flags = null;
 
-	private static function json_encode_for_html(mixed $object, bool $pretty = false) {
-		return htmlspecialchars(
-			string: JSON::encode($object, $pretty),
-			encoding: 'UTF-8',
-			flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
-		);
-	}
-
 	private static function __echo_error__(mixed $value) {
 		echo '<!-- Error: ', (
 			ServerConfig::$dev_mode
-			? static::json_encode_for_html($value, ServerConfig::$pretty_debug)
+			? JSON::encode($value, ServerConfig::$pretty_debug, true)
 			: 'Message redacted'
 		) , ' -->';
 	}
@@ -30,7 +24,7 @@ final class Server {
 			echo '<!-- Debug: ', (
 				$use_print_r
 				? print_r($value, true)
-				: static::json_encode_for_html($value, ServerConfig::$pretty_debug)
+				: JSON::encode($value, ServerConfig::$pretty_debug, true)
 			), ' -->';
 		}
 	}
@@ -48,34 +42,10 @@ final class Server {
 		static::$flags = new \stdClass();
 		// static::$flags->error = false;
 
+		/* Setup Debugger */
+		Debugger::$dumpper_callback = [static::class, 'echo_debug'];
 		/* Setup Error Handling */
-		\error_reporting(0);
-		\set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline) {
-			$dump = ['at' => "File: {$errfile}; Line: {$errline}", 'msg' => $errstr];
-			if(ServerConfig::$dump_trace_on_error) {
-				$dump['trace'] = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-			}
-			static::__echo_error__($dump);
-			error_clear_last();
-		}, E_ALL | E_STRICT);
-		\register_shutdown_function(function () {
-			$error = error_get_last();
-			if($error !== null) {
-				$dump = ['at' => "File: {$error['file']}; Line: {$error['line']}", 'msg' => $error['message']];
-				if(ServerConfig::$dump_trace_on_error) {
-					$dump['trace'] = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-				}
-				static::__echo_error__($dump);
-			}
-		});
-		\set_exception_handler(function(\Throwable $exception) {
-			$class = get_class($exception);
-			$dump = ['at' => "File: {$exception->getFile()}; Line: {$exception->getLine()}", 'msg' => "Uncatched [{$class}]: {$exception->getMessage()}"];
-			if(ServerConfig::$dump_trace_on_error) {
-				$dump['trace'] = $exception->getTrace();
-			}
-			static::__echo_error__($dump);
-		});
+		ErrorReporting::init(function($data) { static::__echo_error__($data); });
 
 		/* Extract request path */
 		static::$request['path'] = rtrim(urldecode($_GET['@_url_@'] ?? ''), '/');

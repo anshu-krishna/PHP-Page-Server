@@ -5,8 +5,7 @@ use KPS\Server;
 use KPS\ServerConfig;
 
 ServerConfig::$dev_mode = true;
-ServerConfig::$pretty_debug = false;
-// ServerConfig::$dump_trace_on_error = false;
+// ServerConfig::$pretty_debug = false;
 Server::init();
 
 Server::execute();
