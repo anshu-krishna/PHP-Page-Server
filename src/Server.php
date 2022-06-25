@@ -9,7 +9,6 @@ final class Server {
 	use \Krishna\Utilities\StaticOnlyTrait;
 
 	private static array $request = [ "path" => null, "query" => null ];
-	private static ?object $flags = null;
 
 	private static function __echo_error__(mixed $value) {
 		echo '<!-- Error: ', (
@@ -36,11 +35,7 @@ final class Server {
 
 	public static function init() {
 		/* Stop second run */
-		if(static::$flags !== null) { return; }
-		
-		/* Init flags */
-		static::$flags = new \stdClass();
-		// static::$flags->error = false;
+		if(static::$request['path'] !== null) { return; }
 
 		/* Setup Debugger */
 		Debugger::$dumpper_callback = [static::class, 'echo_debug'];
@@ -71,9 +66,6 @@ final class Server {
 	}
 
 	public static function execute() {
-		if(static::$flags === null) {
-			static::echo_error('Server not initalised');
-			return;
-		}
+		static::init();
 	}
 }
