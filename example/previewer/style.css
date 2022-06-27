@@ -1,0 +1,67 @@
+* { box-sizing: border-box; }
+.hljs{
+	background: inherit;
+	color: inherit;
+}
+code {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+button, input[type="submit"], input[type="reset"] {
+	cursor: pointer;
+	padding: 0.75em 1em;
+	min-width: 5em;
+}
+textarea { resize: vertical; }
+label {
+	cursor: pointer;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900;
+}
+body {
+	margin: 0; padding: 0;
+	height: 100vh; width: 100vw;
+	max-height: 100vh;
+	display: grid;
+	grid-template-areas: "ip view" "code code";
+	gap: 0.25em;
+	grid-template-rows: 1fr 1fr;
+}
+#ip, #code, #view {
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+}
+#ipCntr { grid-area: ip; }
+#ip { padding: 0.5em; }
+#codeCntr { grid-area: code; }
+#code { display: inline-block; }
+#viewCntr { grid-area: view; }
+#view { border: none; }
+#ip {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	grid-auto-rows: min-content;
+	gap: 0.25em;
+	align-items: center;
+}
+#ip :is(input[type="text"], textarea) {
+	padding: 0.5em 0.75em; margin-bottom: 0.5em;
+}
+#ip > div { grid-column: 1/span 2; }
+.cntr {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 0.25em;
+	overflow-y: hidden;
+	box-shadow: 0 0 0.25em black;
+}
+.cntr > header {
+	display: block;
+	writing-mode: vertical-rl; writing-mode: sideways-lr; text-orientation: mixed;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 900; font-size: larger;
+	text-align: center;
+	color: #fff; background: #212121;
+	padding: 0.25em;
+}

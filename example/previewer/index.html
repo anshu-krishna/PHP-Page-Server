@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dev Display</title>
+	<link rel="stylesheet" href="highlight.css" />
+	<script src="highlight.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<script src="peg_json.js"></script>
+</head>
+<body>
+	<div id="ipCntr" class="cntr">
+		<header>Request</header>
+		<form id="ip">
+			<label for="ip_url">URL:</label><input id="ip_url" type="text" name="url" placeholder="URL" />
+			<label for="ip_post">Post:</label><textarea id="ip_post" name="post" rows="3" placeholder="POST values in JSON"></textarea>
+			<input type="checkbox" name="url_encode" id="ip_url_encode" checked><label for="ip_url_encode">
+				[ON]&nbsp; = POST URL Encode<br>
+				[OFF] = POST JSON Encode
+			</label>
+			<div>
+				<input type="submit" value="GO" />
+				<input type="reset" value="Reset" />
+			</div>
+		</form>
+	</div>
+	<div id="codeCntr" class="cntr">
+		<header>Code</header>
+		<code id="code" class="language-html">Waiting for Request</code>
+	</div>
+	<div id="viewCntr" class="cntr">
+		<header>Preview</header>
+		<iframe id="view" srcdoc="<code>Waiting for Request</code>"></iframe>
+	</div>
+	<script src="index.js"></script>
+</body>
+</html>
