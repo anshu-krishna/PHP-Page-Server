@@ -64,7 +64,7 @@ final class Server {
 
 		Debugger::dump(static::$request);
 		Debugger::dump(static::$request);
-		// echo $abc;
+		echo $abc;
 	}
 
 	public static function execute() {

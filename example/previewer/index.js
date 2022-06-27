@@ -23,7 +23,9 @@ function updateOutput(code = null) {
 	code ??= 'Loading...';
 	
 	nodes.code.textContent = code;
-	hljs.highlightElement(nodes.code);
+	if(nodes.form.highlight.checked) {
+		hljs.highlightElement(nodes.code);
+	}
 
 	nodes.view.srcdoc = srcdoc;	
 }
