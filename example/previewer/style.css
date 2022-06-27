@@ -11,11 +11,11 @@ button, input[type="submit"], input[type="reset"] {
 	cursor: pointer;
 	padding: 0.75em 1em;
 	min-width: 5em;
+	font-family: 'Courier New', Courier, monospace;
 }
 textarea { resize: vertical; }
 label {
 	cursor: pointer;
-	font-family: 'Courier New', Courier, monospace;
 	font-weight: 900;
 }
 body {
@@ -26,6 +26,7 @@ body {
 	grid-template-areas: "ip view" "code code";
 	gap: 0.25em;
 	grid-template-rows: 1fr 1fr;
+	font-family: 'Courier New', Courier, monospace;
 }
 #ip, #code, #view {
 	height: 100%;
@@ -35,7 +36,7 @@ body {
 #ipCntr { grid-area: ip; }
 #ip { padding: 0.5em; }
 #codeCntr { grid-area: code; }
-#code { display: inline-block; }
+#code { display: inline-block; padding: 0.5em 0.75em; }
 #viewCntr { grid-area: view; }
 #view { border: none; }
 #ip {
@@ -59,7 +60,6 @@ body {
 .cntr > header {
 	display: block;
 	writing-mode: vertical-rl; writing-mode: sideways-lr; text-orientation: mixed;
-	font-family: 'Courier New', Courier, monospace;
 	font-weight: 900; font-size: larger;
 	text-align: center;
 	color: #fff; background: #212121;

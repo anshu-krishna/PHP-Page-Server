@@ -1,7 +1,8 @@
 const nodes = {
 	form: document.querySelector('#ip'),
 	code: document.querySelector('#code'),
-	view: document.querySelector('#view')
+	view: document.querySelector('#view'),
+	link: document.querySelector('a')
 };
 function parseJSON(str) {
 	str = String(str).trim();
@@ -69,4 +70,9 @@ nodes.form.addEventListener('submit', (e) => {
 	e.stopPropagation();
 	fetchNDisplay();
 	return false;
+});
+nodes.form.url.addEventListener('keyup', () => {
+	const link = `../public/${nodes.form.url.value}`;
+	nodes.link.setAttribute('href', link);
+	nodes.link.textContent = link;
 });
