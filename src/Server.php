@@ -63,11 +63,9 @@ final class Server {
 		static::$request['query'] = array_merge($_POST, static::$request['query'], $_GET);
 
 		Debugger::dump(static::$request);
-		echo $abc;
 	}
 
 	public static function execute() {
 		static::init();
-		echo 1;
 	}
 }
