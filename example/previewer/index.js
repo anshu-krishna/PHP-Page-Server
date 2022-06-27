@@ -6,6 +6,7 @@ const nodes = {
 };
 function parseJSON(str) {
 	str = String(str).trim();
+	if(str.length === 0) { return null; }
 	try {
 		return JSON.parse(str);
 	} catch (error) {
@@ -67,9 +68,8 @@ async function fetchNDisplay() {
 			fetchConfig.headers = { 'Content-Type': 'application/json' };fetchConfig.body = JSON.stringify(ip.post);
 			console.log('POST Encoding as application/json');
 		}
+		console.log('POST:', ip.post);
 	}
-
-	console.log('POST:', ip.post);
 
 	const fetched = await fetch(`${getURLBase()}${ip.url}`, fetchConfig).then(r => r.text()).catch(e => 'Load failed');
 
