@@ -19,6 +19,17 @@ function parseJSON(str) {
 	console.log('Invalid JSON:', str);
 	return null;
 }
+function getURLBase() {
+	const base = String(nodes.form.url_base.value).trim();
+	base ??= '../public/';
+
+	return base.endsWith('/') ? base : `${base}/`;
+}
+function updateLink() {
+	const link = `${getURLBase()}${nodes.form.url.value}`;
+	nodes.link.setAttribute('href', link);
+	nodes.link.textContent = link;
+}
 function updateOutput(code = null) {
 	const srcdoc = code ?? '<code>Loading...</code>';
 	code ??= 'Loading...';
@@ -60,7 +71,7 @@ async function fetchNDisplay() {
 
 	console.log('POST:', ip.post);
 
-	const fetched = await fetch(`../public/${ip.url}`, fetchConfig).then(r => r.text()).catch(e => 'Load failed');
+	const fetched = await fetch(`${getURLBase()}${ip.url}`, fetchConfig).then(r => r.text()).catch(e => 'Load failed');
 
 	updateOutput(fetched);
 	console.groupEnd();
@@ -71,8 +82,6 @@ nodes.form.addEventListener('submit', (e) => {
 	fetchNDisplay();
 	return false;
 });
-nodes.form.url.addEventListener('keyup', () => {
-	const link = `../public/${nodes.form.url.value}`;
-	nodes.link.setAttribute('href', link);
-	nodes.link.textContent = link;
-});
+nodes.form.url.addEventListener('keyup', updateLink);
+nodes.form.url_base.addEventListener('keyup', updateLink);
+updateLink();

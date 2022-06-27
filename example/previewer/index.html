@@ -12,13 +12,19 @@
 	<div id="ipCntr" class="cntr">
 		<header>Request</header>
 		<form id="ip">
-			<label for="ip_url">URL:</label><input id="ip_url" type="text" name="url" placeholder="URL" />
-			<label for="ip_post">Post:</label><textarea id="ip_post" name="post" rows="3" placeholder="POST values in JSON"></textarea>
-			<input type="checkbox" name="url_encode" id="ip_url_encode" checked><label for="ip_url_encode">
+			<label for="ip_url_base">Base:</label>
+			<input id="ip_url_base" type="text" name="url_base" placeholder="URL Base" value="../public/" />
+			<label for="ip_url">URL:</label>
+			<input id="ip_url" type="text" name="url" placeholder="URL" />
+			<label for="ip_post">Post:</label>
+			<textarea id="ip_post" name="post" rows="3" placeholder="POST values in JSON"></textarea>
+			<input type="checkbox" name="url_encode" id="ip_url_encode" checked>
+			<label for="ip_url_encode">
 				[ON]&nbsp; = POST URL Encode<br>
 				[OFF] = POST JSON Encode
 			</label>
-			<input type="checkbox" name="highlight" id="ip_highlight" ><label for="ip_highlight">
+			<input type="checkbox" name="highlight" id="ip_highlight" >
+			<label for="ip_highlight">
 				[ON/OFF]: Use code highlighting
 			</label>
 			<div style="margin-top: 0.5em;">
