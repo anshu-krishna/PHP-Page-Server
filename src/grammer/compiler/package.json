@@ -1,0 +1,13 @@
+{
+	"description": "PHP PEG grammer compiler",
+	"main": "compiler.js",
+	"scripts": {
+		"compile": "node ./compiler.mjs"
+	},
+	"author": "Anshu Krishna <anshu.krishna5@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"peggy": "^1.0.0",
+		"phpeggy": "^1.0.1"
+	}
+}
