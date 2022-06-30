@@ -5,6 +5,7 @@
 	<title>ABC</title>
 </head>
 <body>
+	\\[[ xyz.html ]]
 	[< xyz.html >]
 	{< pqr >}
 </body>
