@@ -5,8 +5,7 @@
 	<title>ABC</title>
 </head>
 <body>
-	\\[[ xyz.html ]]
-	[< xyz.html >]
-	{< pqr >}
+	[[ xyz.html ]]
+	<span>{< some_val >}</span>
 </body>
 </html>
