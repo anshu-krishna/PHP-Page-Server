@@ -27,7 +27,8 @@ body {
 	gap: 0.25em;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr 1fr;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: Consolas, 'Courier New', Courier, monospace;
+	font-size: 14px;
 }
 #ip, #code, #view {
 	height: 100%;
@@ -65,7 +66,7 @@ body {
 .cntr > header {
 	display: block;
 	writing-mode: vertical-rl; writing-mode: sideways-lr; text-orientation: mixed;
-	font-weight: 900; font-size: larger;
+	font-weight: 700; font-size: 1.1em;
 	text-align: center;
 	color: #fff; background: #212121;
 	padding: 0.25em;

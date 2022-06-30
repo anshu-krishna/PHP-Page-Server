@@ -5,6 +5,7 @@
 	<title>ABC</title>
 </head>
 <body>
-	ABC
+	[< xyz.html >]
+	{< pqr >}
 </body>
 </html>
