@@ -13,11 +13,13 @@ use KPS\Msg\Debug as DebugMsg;
 
 final class Server {
 	use \Krishna\Utilities\StaticOnlyTrait;
-	
+
 	private static float $start_time = 0.0;
 	// private static bool $init_flag = false;
 	public static ServerCfg $CFG;
-	public static array $REQ = [ "path" => null, "query" => null ];
+	public static array $_VALS = [
+		"_REQ_" => [ "path" => null, "query" => null ]
+	];
 
 	private static \KPS\Peg\Template $peg_template;
 
@@ -69,25 +71,26 @@ final class Server {
 
 		/* Setup REQ */
 		{
+			$REQ = &static::$_VALS['_REQ_'];
 			/* Extract request path */
-			static::$REQ['path'] = rtrim(urldecode($_GET['@_url_@'] ?? ''), '/');
+			$REQ['path'] = rtrim(urldecode($_GET['@_url_@'] ?? ''), '/');
 			unset($_GET['@_url_@']);
-			if(strcasecmp(static::$REQ['path'], 'index.php') === 0) {
-				static::$REQ['path'] = [];
+			if(strcasecmp($REQ['path'], 'index.php') === 0) {
+				$REQ['path'] = [];
 			}
-			static::$REQ['path'] = explode('/', static::$REQ['path']);
+			$REQ['path'] = explode('/', $REQ['path']);
 
-			if('' === (static::$REQ['path'][0] ?? false)) {
-				array_shift((static::$REQ['path']));
+			if('' === ($REQ['path'][0] ?? false)) {
+				array_shift(($REQ['path']));
 			}
 
 			/* Extract request query */
-			static::$REQ['query'] = [];
+			$REQ['query'] = [];
 			$ct = $_SERVER['CONTENT_TYPE'] ?? false;
 			if($ct !== false && in_array('application/json', explode(';', $ct))) {
-				static::$REQ['query'] = JSON::decode(file_get_contents('php://input')) ?? [];
+				$REQ['query'] = JSON::decode(file_get_contents('php://input')) ?? [];
 			}
-			static::$REQ['query'] = array_merge($_POST, static::$REQ['query'], $_GET);
+			$REQ['query'] = array_merge($_POST, $REQ['query'], $_GET);
 		}
 	}
 	public static function route(string $pattern, string $view) {
@@ -124,6 +127,19 @@ final class Server {
 		}
 		return $r;
 	}
+	private static function resolve_vals(array $keys) : ?string {
+		$ret = &static::$_VALS;
+		foreach($keys as $k) {
+			if(is_array($ret) && array_key_exists($k, $ret)) {
+				$ret = &$ret[$k];
+			} else {
+				return null;
+			}
+		}
+		///Stringify
+		// return $ret;
+		return strval($ret);
+	}
 	private static function echo_view(string $file, ?string $base = null, bool $esc = false) {
 		$path = static::resolve_view_path($file, $base);
 		if($path === null) {
@@ -154,7 +170,12 @@ final class Server {
 					echo $esc ? static::html_esc($c[1]) : $c[1];
 					break;
 				case 1: // Val
-					$rval = 'Resolved value of: ' . implode('.', $c[2]);
+					$rval = static::resolve_vals($c[2]);
+					if($rval === null) {
+						echo ErrMsg::create('Unable to resolve: ' . static::index_chain_to_string($c[2]));
+						break;
+					}
+					$rval ??= 'Not found';
 					switch($c[1]) {
 						case 0:
 							echo $esc ? static::html_esc($rval) : $rval;
