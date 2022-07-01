@@ -11,6 +11,7 @@ Val
 Txt = c:TxtChar+ { return { ty:'txt', val: c.join('') }; }
 TxtChar
 	= [^\x5B\x7B\x5C]
+    / "\\\\" { return "\\"; }
     / "\\[[" { return "[["; }
     / "\\{{" { return "\x7B\x7B"; }
     / "\\[<" { return "[<"; }

@@ -1,6 +1,6 @@
 {
 	"dir": "../",
-	"ip": "02.php.pegjs",
+	"ip": "03.php.peggy",
 	"namespace": "KPS\\Peg",
 	"class": "Template"
 }

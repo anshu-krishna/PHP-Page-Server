@@ -13,6 +13,7 @@ use KPS\Msg\Debug as DebugMsg;
 
 final class Server {
 	use \Krishna\Utilities\StaticOnlyTrait;
+	
 	private static float $start_time = 0.0;
 	// private static bool $init_flag = false;
 	public static ServerCfg $CFG;
@@ -107,7 +108,22 @@ final class Server {
 		if(is_readable($find)) { return $find; }
 		return null;
 	}
-
+	private static function html_esc(string $value) {
+		return htmlspecialchars(
+			string: $value, encoding: 'UTF-8',
+			flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
+		);
+	}
+	private static function index_chain_to_string(array $chain) {
+		$r = "{$chain[0]}";
+		$max = count($chain);
+		$i = 1;
+		while($i < $max) {
+			$r .= "[{$chain[$i]}]";
+			$i++;
+		}
+		return $r;
+	}
 	private static function echo_view(string $file, ?string $base = null, bool $esc = false) {
 		$path = static::resolve_view_path($file, $base);
 		if($path === null) {
@@ -127,24 +143,49 @@ final class Server {
 			);
 			return;
 		}
-		foreach($content as $item) {
-			switch($item['ty']) {
-				case 'txt':
-					echo $esc ? htmlspecialchars(
-						string: $item['val'], encoding: 'UTF-8',
-						flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
-					) : $item['val'];
+		/* Format:
+			Text: [ty = 0, value];
+			Val: [ty = 1, mode = ( 0 = Normal / 1 = Esc / 2 = Debug ), value];
+			File: [ty = 2, mode = ( 0 = Normal / 1 = Esc / 2 = No Parse ) , value];
+		*/
+		foreach($content as $c) {
+			switch($c[0]) {
+				case 0: // Text
+					echo $esc ? static::html_esc($c[1]) : $c[1];
 					break;
-				case 'val':
-					$val = "Value of:" . $item['val'];
-					echo $esc ? htmlspecialchars(
-						string: $val, encoding: 'UTF-8',
-						flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
-					) : $val;
+				case 1: // Val
+					$rval = 'Resolved value of: ' . implode('.', $c[2]);
+					switch($c[1]) {
+						case 0:
+							echo $esc ? static::html_esc($rval) : $rval;
+							break;
+						case 1:
+							echo static::html_esc($rval);
+							break;
+						case 2:
+							echo DebugMsg::create(['index' => static::index_chain_to_string($c[2]), 'value' => $rval]);
+							break;
+					}
 					break;
-				case 'file':
-					// Debugger::dump($item);
-					static::echo_view($item['val'], dirname($path), $item['esc']);
+				case 2: // File
+					$dir = dirname($path);
+					switch($c[1]) {
+						case 0:
+							static::echo_view($c[2], $dir, false);
+							break;
+						case 1:
+							static::echo_view($c[2], $dir, true);
+							break;
+						case 2:
+							$path2 = static::resolve_view_path($c[2], $dir);
+							if($path2 === null) {
+								echo ErrMsg::create(['View not found' => Server::$CFG->views_dir . "/{$c[2]}"]);
+								return;
+							} else {
+								echo static::html_esc(file_get_contents($path2));
+							}
+							break;
+					}
 					break;
 			}
 		}
@@ -154,7 +195,7 @@ final class Server {
 			Matches the REQ to list of routes;
 			Returns the root template file or null;
 		*/
-		return 'abc.php';
+		return 'app.php';
 	}
 	public static function execute() {
 		static::init();

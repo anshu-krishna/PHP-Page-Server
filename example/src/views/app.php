@@ -5,7 +5,9 @@
 	<title>ABC</title>
 </head>
 <body>
-	[[ xyz.html ]]
+	[[ "app/header.php" ]]
+	<span>{{ some_val }}</span>
 	<span>{< some_val >}</span>
+	<span>{? some_val["abc"] ?}</span>
 </body>
 </html>
