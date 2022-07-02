@@ -8,4 +8,4 @@ $QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
 		: '[[ "./navbar1.html" ]]'
 	?>
 </header>
-<?php var_dump($_QUERY); ?>
+<?php //var_dump($_QUERY); ?>

@@ -14,8 +14,8 @@ use KPS\Msg\Debug as DebugMsg;
 final class Server {
 	use \Krishna\Utilities\StaticOnlyTrait;
 
-	private static float $start_time = 0.0;
-	// private static bool $init_flag = false;
+	// private static float $start_time = 0.0;
+	private static bool $init_flag = false;
 	public static ServerCfg $CFG;
 	public static array $_VALS = [
 		"_REQ_" => [ "path" => null, "query" => null ]
@@ -46,10 +46,10 @@ final class Server {
 		bool $minify_html = false
 	) {
 		/* Stop second run */
-		// if(static::$init_flag) { return; }
-		// static::$init_flag = true;
-		if(static::$start_time !== 0.0) { return; }
-		static::$start_time = microtime(true);
+		if(static::$init_flag) { return; }
+		static::$init_flag = true;
+		// if(static::$start_time !== 0.0) { return; }
+		// static::$start_time = microtime(true);
 
 		/* Setup Config */
 		{
@@ -214,9 +214,15 @@ final class Server {
 		$root = static::get_root_view();
 
 		static::echo_view($root);
-		static::echo_debug('Runtime (ms): ' . round(
-			(microtime(true) - static::$start_time) * 1000,
-			3
-		));
+		// static::echo_debug('Runtime (ms): ' . round(
+		// 	(microtime(true) - static::$start_time) * 1000,
+		// 	3
+		// ));
+		if(static::$CFG->dev_mode && array_key_exists('REQUEST_TIME_FLOAT', $_SERVER)) {
+			static::echo_debug('Runtime (ms): ' . round(
+				(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
+				3
+			));
+		}
 	}
 }
