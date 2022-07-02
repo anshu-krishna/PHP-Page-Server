@@ -5,6 +5,7 @@ use Krishna\Utilities\JSON;
 use Krishna\Utilities\StaticOnlyTrait;
 
 use KPS\Config\Msg as MsgCfg;
+use KPS\Lib;
 use KPS\Server;
 
 abstract class AbstractMsg {
@@ -17,9 +18,6 @@ abstract class AbstractMsg {
 		if($cfg->as_comment) {
 			return str_replace(['<!--', '-->'], ['❮!--', '--❯'], $msg);
 		}
-		return htmlspecialchars(
-			string: $msg, encoding: 'UTF-8',
-			flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
-		);
+		return Lib::html_esc($msg);
 	}
 }

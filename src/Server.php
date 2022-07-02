@@ -91,6 +91,7 @@ final class Server {
 				$REQ['query'] = JSON::decode(file_get_contents('php://input')) ?? [];
 			}
 			$REQ['query'] = array_merge($_POST, $REQ['query'], $_GET);
+			$_GET = $_POST = [];
 		}
 	}
 	public static function route(string $pattern, string $view) {
@@ -99,53 +100,8 @@ final class Server {
 		*/
 	}
 
-	private static function resolve_view_path(string $find, ?string $base = null) : ?string {
-		if(str_starts_with($find, '.')) {
-			$base ??= Server::$CFG->views_dir;
-			$path = "{$base}/{$find}";
-			if(is_readable($path)) { return $path; }
-			return null;
-		}
-		$path = Server::$CFG->views_dir . "/{$find}";
-		if(is_readable($path)) { return $path; }
-		if(is_readable($find)) { return $find; }
-		return null;
-	}
-	private static function html_esc(string $value) {
-		return htmlspecialchars(
-			string: $value, encoding: 'UTF-8',
-			flags: ENT_SUBSTITUTE | ENT_NOQUOTES | ENT_HTML5
-		);
-	}
-	private static function index_chain_to_string(array $chain) {
-		$r = "{$chain[0]}";
-		$max = count($chain);
-		$i = 1;
-		while($i < $max) {
-			$r .= "[{$chain[$i]}]";
-			$i++;
-		}
-		return $r;
-	}
-	private static function stringfiy(mixed $value) : ?string {
-		if($value === null || is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))) {
-			return strval($value);
-		}
-		return JSON::encode($value);
-	}
-	private static function resolve_vals(array $keys) : ?string {
-		$ret = static::$_VALS;
-		foreach($keys as $k) {
-			if(is_array($ret) && array_key_exists($k, $ret)) {
-				$ret = $ret[$k];
-			} else {
-				return null;
-			}
-		}
-		return static::stringfiy($ret);
-	}
 	private static function echo_view(string $file, ?string $base = null, bool $esc = false) {
-		$path = static::resolve_view_path($file, $base);
+		$path = Lib::resolve_path(static::$CFG->views_dir, $file, $base);
 		if($path === null) {
 			echo ErrMsg::create(['View not found' => Server::$CFG->views_dir . "/{$file}"]);
 			return;
@@ -171,24 +127,24 @@ final class Server {
 		foreach($content as $c) {
 			switch($c[0]) {
 				case 0: // Text
-					echo $esc ? static::html_esc($c[1]) : $c[1];
+					echo $esc ? Lib::html_esc($c[1]) : $c[1];
 					break;
 				case 1: // Val
-					$rval = static::resolve_vals($c[2]);
+					$rval = Lib::resolve_val_chain(static::$_VALS, $c[2]);
 					if($rval === null) {
-						echo ErrMsg::create('Unable to resolve: ' . static::index_chain_to_string($c[2]));
+						echo ErrMsg::create('Unable to resolve: ' . Lib::stringify_index_chain($c[2]));
 						break;
 					}
 					$rval ??= 'Not found';
 					switch($c[1]) {
 						case 0:
-							echo $esc ? static::html_esc($rval) : $rval;
+							echo $esc ? Lib::html_esc($rval) : $rval;
 							break;
 						case 1:
-							echo static::html_esc($rval);
+							echo Lib::html_esc($rval);
 							break;
 						case 2:
-							echo DebugMsg::create(['index' => static::index_chain_to_string($c[2]), 'value' => $rval]);
+							echo DebugMsg::create(['index' => Lib::stringify_index_chain($c[2]), 'value' => $rval]);
 							break;
 					}
 					break;
@@ -202,12 +158,12 @@ final class Server {
 							static::echo_view($c[2], $dir, true);
 							break;
 						case 2:
-							$path2 = static::resolve_view_path($c[2], $dir);
+							$path2 = Lib::resolve_path(static::$CFG->views_dir, $c[2], $dir);
 							if($path2 === null) {
 								echo ErrMsg::create(['View not found' => Server::$CFG->views_dir . "/{$c[2]}"]);
 								return;
 							} else {
-								echo static::html_esc(file_get_contents($path2));
+								echo Lib::html_esc(file_get_contents($path2));
 							}
 							break;
 					}
