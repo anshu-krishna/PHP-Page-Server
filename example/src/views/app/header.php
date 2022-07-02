@@ -7,5 +7,5 @@ $QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
 		? '[[ "./navbar2.html" ]]'
 		: '[[ "./navbar1.html" ]]'
 	?>
-	<?php var_dump($_QUERY); ?>
 </header>
+<?php var_dump($_QUERY); ?>

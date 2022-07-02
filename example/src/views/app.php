@@ -6,7 +6,7 @@
 </head>
 <body>
 	[[ "app/header.php" ]]
-	\{{ _REQ_["path"][0] }}
-	\{? _REQ_["path"] ?}
+	{{ _REQ_["path"][0] }}
+	{? _REQ_["path"] ?}
 </body>
 </html>
