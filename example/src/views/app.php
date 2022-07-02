@@ -7,9 +7,6 @@
 <body>
 	[[ "app/header.php" ]]
 	{{ _REQ_["path"][0] }}
-
-	<span>{{ some_val }}</span>
-	<span>{< some_val >}</span>
-	<span>{? some_val["abc"] ?}</span>
+	{? _REQ_["path"] ?}
 </body>
 </html>

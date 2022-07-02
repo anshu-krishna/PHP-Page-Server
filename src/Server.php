@@ -127,18 +127,22 @@ final class Server {
 		}
 		return $r;
 	}
+	private static function stringfiy(mixed $value) : ?string {
+		if($value === null || is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))) {
+			return strval($value);
+		}
+		return JSON::encode($value);
+	}
 	private static function resolve_vals(array $keys) : ?string {
-		$ret = &static::$_VALS;
+		$ret = static::$_VALS;
 		foreach($keys as $k) {
 			if(is_array($ret) && array_key_exists($k, $ret)) {
-				$ret = &$ret[$k];
+				$ret = $ret[$k];
 			} else {
 				return null;
 			}
 		}
-		///Stringify
-		// return $ret;
-		return strval($ret);
+		return static::stringfiy($ret);
 	}
 	private static function echo_view(string $file, ?string $base = null, bool $esc = false) {
 		$path = static::resolve_view_path($file, $base);
