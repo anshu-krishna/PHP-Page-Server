@@ -29,13 +29,22 @@ final class Server {
 			echo DebugMsg::create($value, $cfg ?? Server::$CFG->msg);
 		}
 	}
-	public static function echo_error(mixed $msg, ?string $from = null, ?MsgCfg $cfg = null) {
+	public static function echo_error(
+		mixed $msg,
+		?string $from = null,
+		?MsgCfg $cfg = null
+	) {
 		$trace = Debugger::trace_call_point($from);
 		$trace['msg'] = $msg;
 		echo ErrMsg::create($trace, $cfg);
 	}
 
-	public static function init(?string $views_dir = null, ?MsgCfg $msg_config = null, bool $dev_mode = false) {
+	public static function init(
+		?string $views_dir = null,
+		?MsgCfg $msg_config = null,
+		bool $dev_mode = false,
+		bool $minify_html = false
+	) {
 		/* Stop second run */
 		// if(static::$init_flag) { return; }
 		// static::$init_flag = true;
@@ -48,6 +57,7 @@ final class Server {
 				dev_mode: $dev_mode,
 				views_dir: $views_dir ?? '',
 				msg: $msg_config ?? new MsgCfg(),
+				minify_html: $minify_html
 			);
 			$views_path = realpath($views_dir ?? '../src/views');
 			if($views_path === false) {
@@ -100,10 +110,16 @@ final class Server {
 		*/
 	}
 
-	private static function echo_view(string $file, ?string $base = null, bool $esc = false) {
+	private static function echo_view(
+		string $file,
+		?string $base = null,
+		bool $esc = false
+	) {
 		$path = Lib::resolve_path(static::$CFG->views_dir, $file, $base);
 		if($path === null) {
-			echo ErrMsg::create(['View not found' => Server::$CFG->views_dir . "/{$file}"]);
+			echo ErrMsg::create([
+				'View not found' => Server::$CFG->views_dir . "/{$file}"
+			]);
 			return;
 		}
 		ob_start();
@@ -112,11 +128,14 @@ final class Server {
 		try {
 			$content = static::$peg_template->parse($content);
 		} catch (\KPS\Peg\SyntaxError $er) {
-			echo ErrMsg::create_from_trace(
-				file: $path,
-				line: $er->grammarLine,
-				msg: $er->getMessage()
-			);
+			echo ErrMsg::create([
+				'type' => 'Parse Error',
+				'file' => $path,
+				// 'line' => $er->grammarLine,
+				'msg' => $er->getMessage(),
+				// 'content' => $content,
+			]);
+			// echo $content;
 			return;
 		}
 		/* Format:
@@ -127,16 +146,22 @@ final class Server {
 		foreach($content as $c) {
 			switch($c[0]) {
 				case 0: // Text
+					if(Server::$CFG->minify_html) {
+						$c[1] = preg_replace('/\s+/', ' ', $c[1]);
+					}
 					echo $esc ? Lib::html_esc($c[1]) : $c[1];
 					break;
 				case 1: // Val
-					$rval = Lib::resolve_val_chain(static::$_VALS, $c[2]);
+					[, $mode, $value] = $c;
+					$rval = Lib::resolve_val_chain(static::$_VALS, $value);
 					if($rval === null) {
-						echo ErrMsg::create('Unable to resolve: ' . Lib::stringify_index_chain($c[2]));
+						echo ErrMsg::create(
+							'Unable to resolve: ' . Lib::stringify_index_chain($value)
+						);
 						break;
 					}
 					$rval ??= 'Not found';
-					switch($c[1]) {
+					switch($mode) {
 						case 0:
 							echo $esc ? Lib::html_esc($rval) : $rval;
 							break;
@@ -144,23 +169,29 @@ final class Server {
 							echo Lib::html_esc($rval);
 							break;
 						case 2:
-							echo DebugMsg::create(['index' => Lib::stringify_index_chain($c[2]), 'value' => $rval]);
+							echo DebugMsg::create([
+								'index' => Lib::stringify_index_chain($value),
+								'value' => $rval
+							]);
 							break;
 					}
 					break;
 				case 2: // File
+					[, $mode, $value] = $c;
 					$dir = dirname($path);
-					switch($c[1]) {
+					switch($mode) {
 						case 0:
-							static::echo_view($c[2], $dir, false);
+							static::echo_view($value, $dir, false);
 							break;
 						case 1:
-							static::echo_view($c[2], $dir, true);
+							static::echo_view($value, $dir, true);
 							break;
 						case 2:
-							$path2 = Lib::resolve_path(static::$CFG->views_dir, $c[2], $dir);
+							$path2 = Lib::resolve_path(static::$CFG->views_dir, $value, $dir);
 							if($path2 === null) {
-								echo ErrMsg::create(['View not found' => Server::$CFG->views_dir . "/{$c[2]}"]);
+								echo ErrMsg::create([
+									'View not found' => Server::$CFG->views_dir . "/{$value}"
+								]);
 								return;
 							} else {
 								echo Lib::html_esc(file_get_contents($path2));
@@ -183,6 +214,9 @@ final class Server {
 		$root = static::get_root_view();
 
 		static::echo_view($root);
-		static::echo_debug('Runtime (ms): ' . round((microtime(true) - static::$start_time) * 1000, 3));
+		static::echo_debug('Runtime (ms): ' . round(
+			(microtime(true) - static::$start_time) * 1000,
+			3
+		));
 	}
 }

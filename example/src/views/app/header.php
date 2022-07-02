@@ -1,8 +1,11 @@
-<header style="padding:0.5em;outline:auto">
+<?php
+$QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
+?><header style="padding:0.5em;outline:auto">
 	This is page Header;
 	<?=
-		isset($_GET['a'])
+		isset($QUERY['a'])
 		? '[[ "./navbar2.html" ]]'
 		: '[[ "./navbar1.html" ]]'
 	?>
+	<?php var_dump($_QUERY); ?>
 </header>

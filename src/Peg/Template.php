@@ -322,15 +322,13 @@ class Template {
     private function peg_f8($h, $t) { return [$h, ...$t]; }
     private function peg_f9($k) { return $k; }
     private function peg_f10($chars) { return implode('', $chars); }
-    private function peg_f11($r) {
-    		return match($r) {
+    private function peg_f11($r) { return match($r) {
     			'b' => "\b",
     			'f' => "\f",
     			'n' => "\n",
     			'r' => "\r",
     			't' => "\t",
-    		};
-    	}
+    		}; }
     private function peg_f12($digits) { return Helper::makeChar($digits, 8); }
     private function peg_f13($digits) { return Helper::makeChar($digits, 16); }
     private function peg_f14($i) { return intval($i); }
@@ -902,6 +900,17 @@ class Template {
             } else {
               $this->peg_currPos = $s0;
               $s0 = $this->peg_FAILED;
+            }
+            if ($s0 === $this->peg_FAILED) {
+              if ($this->input_substr($this->peg_currPos, 1) === $this->peg_c27) {
+                $s0 = $this->peg_c27;
+                $this->peg_currPos++;
+              } else {
+                $s0 = $this->peg_FAILED;
+                if ($this->peg_silentFails === 0) {
+                    $this->peg_fail($this->peg_c28);
+                }
+              }
             }
           }
         }

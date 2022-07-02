@@ -10,7 +10,7 @@ const config = ((file) => {
 		console.log(`Load config from: '${file}'; SUCCESS;`);
 		return data;
 	} catch (error) {
-		console.error(`Load config from: '${file}'; FAILED;`);
+		console.error(`Load config from: '${file}'; FAILED;`, error.message);
 		exit(1);
 	}
 })("./compiler.json");
@@ -22,7 +22,7 @@ const grammer = ((file) => {
 		console.log(`Load grammer from: '${file}'; SUCCESS;`);
 		return txt;
 	} catch (error) {
-		console.error(`Load grammer from: '${file}'; FAILED;`);
+		console.error(`Load grammer from: '${file}'; FAILED;`, error.message);
 		exit(1);
 	}
 })(`${config.dir}${config.ip}`);
@@ -41,7 +41,7 @@ const parser = (() => {
 		console.log(`Generate parser; SUCCESS;`);
 		return txt;
 	} catch (error) {
-		console.error(`Generate parser; FAILED;`);
+		console.error(`Generate parser; FAILED;`, error.message);
 		exit(1);
 	}
 })();
