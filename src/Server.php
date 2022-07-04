@@ -156,26 +156,29 @@ final class Server {
 					break;
 				case 1: // Val
 					[, $mode, $value] = $c;
-					$rval = Lib::resolve_val_chain(static::$_VALS, $value);
-					if($rval === null) {
+					[$valid, $rval] = Lib::resolve_val_chain(static::$_VALS, $value);
+					if(!$valid) {
 						echo ErrMsg::create(
 							'Unable to resolve: ' . Lib::stringify_index_chain($value)
 						);
 						break;
 					}
-					$rval ??= 'Not found';
 					switch($mode) {
 						case 0:
+							$rval = Lib::stringfiy($rval);
 							echo $esc ? Lib::html_esc($rval) : $rval;
 							break;
 						case 1:
+							$rval = Lib::stringfiy($rval);
 							echo Lib::html_esc($rval);
 							break;
 						case 2:
-							echo DebugMsg::create([
-								'index' => Lib::stringify_index_chain($value),
-								'value' => $rval
-							]);
+							if(Server::$CFG->dev_mode) {
+								echo DebugMsg::create([
+									'index' => Lib::stringify_index_chain($value),
+									'value' => $rval
+								]);
+							}
 							break;
 					}
 					break;
@@ -217,10 +220,6 @@ final class Server {
 		$root = static::get_root_view();
 
 		static::echo_view($root);
-		// static::echo_debug('Runtime (ms): ' . round(
-		// 	(microtime(true) - static::$start_time) * 1000,
-		// 	3
-		// ));
 		if(static::$CFG->dev_mode && array_key_exists('REQUEST_TIME_FLOAT', $_SERVER)) {
 			static::echo_debug('Runtime (ms): ' . round(
 				(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,

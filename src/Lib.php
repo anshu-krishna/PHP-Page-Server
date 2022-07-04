@@ -33,16 +33,16 @@ class Lib {
 		return implode('', $r);
 	}
 
-	public static function resolve_val_chain(array $start, array $keys) : ?string {
+	public static function resolve_val_chain(array $start, array $keys) {
 		$ret = $start;
 		foreach($keys as $k) {
 			if(is_array($ret) && array_key_exists($k, $ret)) {
 				$ret = $ret[$k];
 			} else {
-				return null;
+				return [false, null];
 			}
 		}
-		return static::stringfiy($ret);
+		return [true, $ret];
 	}
 
 	public static function resolve_path(string $default_base, string $find, ?string $base = null) : ?string {

@@ -5,9 +5,7 @@
 	<title>ABC</title>
 </head>
 <body>
-	[[ "app/header.php" ]]
-	{{ _REQ_["path"][0] }}
-	{? _REQ_["path"] ?}
-	"\\asdf";
+[[ "app/header.php" ]]
+{? _REQ_ ?}
 </body>
 </html>

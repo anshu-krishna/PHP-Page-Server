@@ -11,8 +11,7 @@ Server::init(
 		prettify: true,
 		as_comment: true,
 		use_print_r: false
-	),
-	// minify_html: false
+	)
 );
 
 Server::execute();
