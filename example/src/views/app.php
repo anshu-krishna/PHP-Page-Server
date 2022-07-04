@@ -8,5 +8,6 @@
 	[[ "app/header.php" ]]
 	{{ _REQ_["path"][0] }}
 	{? _REQ_["path"] ?}
+	"\\asdf";
 </body>
 </html>

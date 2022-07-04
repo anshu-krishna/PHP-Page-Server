@@ -40,9 +40,9 @@ TxtExp "Text" = c:TxtChar+ {
 	}
 TxtChar
 	= [^\x5C\x5B\x7B] // Everything except '\', "[" and '{'
-	/ "\\" r:("\x5C" / "[" / "{") {
-		return r;
-		/** <?php return $r; ?> **/
+	/ "\\" r:("[[" / "{{")? {
+		return (r === null) ? "\\" : r;
+		/** <?php return ($r === null) ? "\\" : $r; ?> **/
 	}
 	/ r:"[" ! ("[" / "<" / "-") {
 		return r;
@@ -52,7 +52,6 @@ TxtChar
 		return r;
 		/** <?php return $r; ?> **/
 	} // '{' Neg-Look-Ahead for '{', '<' or '?'
-	/ "\\"
 	
 
 Val = h:Iden t:ArrayKey* {
