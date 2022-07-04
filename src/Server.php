@@ -43,7 +43,7 @@ final class Server {
 		?string $views_dir = null,
 		?MsgCfg $msg_config = null,
 		bool $dev_mode = false,
-		bool $minify_html = false
+		// bool $minify_html = false
 	) {
 		/* Stop second run */
 		if(static::$init_flag) { return; }
@@ -57,7 +57,7 @@ final class Server {
 				dev_mode: $dev_mode,
 				views_dir: $views_dir ?? '',
 				msg: $msg_config ?? new MsgCfg(),
-				minify_html: $minify_html
+				// minify_html: $minify_html
 			);
 			$views_path = realpath($views_dir ?? '../src/views');
 			if($views_path === false) {
@@ -146,10 +146,13 @@ final class Server {
 		foreach($content as $c) {
 			switch($c[0]) {
 				case 0: // Text
-					if(Server::$CFG->minify_html) {
-						$c[1] = preg_replace('/\s+/', ' ', $c[1]);
+					if($esc) {
+						$c[1] = Lib::html_esc($c[1]);
 					}
-					echo $esc ? Lib::html_esc($c[1]) : $c[1];
+					// if(Server::$CFG->minify_html) {
+					// 	$c[1] = preg_replace('/\s+/', ' ', $c[1]);
+					// }
+					echo $c[1];
 					break;
 				case 1: // Val
 					[, $mode, $value] = $c;
