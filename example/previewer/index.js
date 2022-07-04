@@ -32,15 +32,12 @@ function updateLink() {
 	nodes.link.textContent = link;
 }
 function updateOutput(code = null) {
-	const srcdoc = code ?? '<code>Loading...</code>';
-	code ??= 'Loading...';
-	
-	nodes.code.textContent = code;
-	if(nodes.form.highlight.checked) {
-		hljs.highlightElement(nodes.code);
-	}
-
-	nodes.view.srcdoc = srcdoc;	
+	nodes.view.srcdoc = code ?? '<code>Loading...</code>';
+	nodes.code.innerHTML = Prism.highlight(
+		code ?? 'Loading...',
+		Prism.languages.html,
+		'html'
+	);
 }
 async function fetchNDisplay() {
 	console.group('Fetch');

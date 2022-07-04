@@ -1,10 +1,6 @@
 * { box-sizing: border-box; }
-.hljs{
-	background: inherit;
-	color: inherit;
-}
 code {
-	white-space: pre-wrap;
+	white-space: pre-wrap !important;
 	word-wrap: break-word;
 }
 button, input[type="submit"], input[type="reset"] {
@@ -12,6 +8,16 @@ button, input[type="submit"], input[type="reset"] {
 	padding: 0.75em 1em;
 	min-width: 5em;
 	font-family: 'Courier New', Courier, monospace;
+	background: #121212;
+	color: #ccc;
+	border: none;
+	border-radius: 0.5em;
+}
+:is(button, input[type="submit"], input[type="reset"]):hover {
+	filter: brightness(1.2);
+}
+:is(button, input[type="submit"], input[type="reset"]):active {
+	box-shadow: 0 0 5px #777 inset;
 }
 textarea { resize: vertical; }
 label {
@@ -29,6 +35,8 @@ body {
 	grid-template-rows: 1fr 1fr;
 	font-family: Consolas, 'Courier New', Courier, monospace;
 	font-size: 14px;
+	background: #212121;
+	color: #fff;
 }
 #ip, #code, #view {
 	height: 100%;
@@ -40,7 +48,7 @@ body {
 #codeCntr { grid-area: code; }
 #code { display: inline-block; padding: 0.5em 0.75em; }
 #viewCntr { grid-area: view; }
-#view { border: none; }
+#view { border: none; background: #fff; color: #000; }
 #ip {
 	display: grid;
 	grid-template-columns: max-content 1fr;
@@ -50,6 +58,10 @@ body {
 }
 #ip :is(input[type="text"], textarea) {
 	padding: 0.5em 0.75em; margin-bottom: 0.5em;
+	color: #fff;
+	background: #212121;
+	border: none;
+	border-bottom: 1px solid #777;
 }
 #ip > div {
 	display: inline-block;
@@ -68,6 +80,6 @@ body {
 	writing-mode: vertical-rl; writing-mode: sideways-lr; text-orientation: mixed;
 	font-weight: 700; font-size: 1.1em;
 	text-align: center;
-	color: #fff; background: #212121;
+	color: #fff; background: #121212;
 	padding: 0.25em;
 }
