@@ -218,8 +218,12 @@ final class Server {
 	public static function execute() {
 		static::init();
 		$root = static::get_root_view();
-
-		static::echo_view($root);
+		if($root === null) {
+			http_response_code(404);
+			static::echo_view('404.php');
+		} else {
+			static::echo_view($root);
+		}
 		if(static::$CFG->dev_mode && array_key_exists('REQUEST_TIME_FLOAT', $_SERVER)) {
 			static::echo_debug('Runtime (ms): ' . round(
 				(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,

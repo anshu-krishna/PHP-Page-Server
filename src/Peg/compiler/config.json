@@ -1,0 +1,13 @@
+{
+	"namespace": "KPS\\Peg",
+	"files": [
+		{
+			"ip": "Template 04-js-php.peggy",
+			"class": "Template"
+		},
+		{
+			"ip": "route.peggy",
+			"class": "Route"
+		}
+	]	
+}
