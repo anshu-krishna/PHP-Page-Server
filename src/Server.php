@@ -21,9 +21,6 @@ final class Server {
 		"_REQ_" => [ "path" => null, "query" => null ]
 	];
 
-	private static \KPS\Peg\Template $peg_template;
-
-
 	public static function echo_debug(mixed $value, ?MsgCfg $cfg = null) {
 		if(Server::$CFG->dev_mode) {
 			echo DebugMsg::create($value, $cfg ?? Server::$CFG->msg);
@@ -77,7 +74,7 @@ final class Server {
 
 
 		/* Setup Peg Parsers */
-		static::$peg_template = new \KPS\Peg\Template;
+		View::$template_parser = new \KPS\Peg\Template;
 
 		/* Setup REQ */
 		{
@@ -115,29 +112,9 @@ final class Server {
 		?string $base = null,
 		bool $esc = false
 	) {
-		$path = Lib::resolve_path(static::$CFG->views_dir, $file, $base);
-		if($path === null) {
-			echo ErrMsg::create([
-				'View not found' => Server::$CFG->views_dir . "/{$file}"
-			]);
-			return;
-		}
-		ob_start();
-		include $path;
-		$content = ob_get_clean();
-		try {
-			$content = static::$peg_template->parse($content);
-		} catch (\KPS\Peg\SyntaxError $er) {
-			echo ErrMsg::create([
-				'type' => 'Parse Error',
-				'file' => $path,
-				// 'line' => $er->grammarLine,
-				'msg' => $er->getMessage(),
-				// 'content' => $content,
-			]);
-			// echo $content;
-			return;
-		}
+		$view = new View($file, $base);
+		$content = $view->content();
+		if($content === null) { return; }
 		/* Format:
 			Text: [ty = 0, value];
 			Val: [ty = 1, mode = ( 0 = Normal / 1 = Esc / 2 = Debug ), value];
@@ -184,7 +161,7 @@ final class Server {
 					break;
 				case 2: // File
 					[, $mode, $value] = $c;
-					$dir = dirname($path);
+					$dir = dirname($view->path);
 					switch($mode) {
 						case 0:
 							static::echo_view($value, $dir, false);
@@ -193,14 +170,14 @@ final class Server {
 							static::echo_view($value, $dir, true);
 							break;
 						case 2:
-							$path2 = Lib::resolve_path(static::$CFG->views_dir, $value, $dir);
-							if($path2 === null) {
+							$path = Lib::resolve_path(static::$CFG->views_dir, $value, $dir);
+							if($path === null) {
 								echo ErrMsg::create([
 									'View not found' => Server::$CFG->views_dir . "/{$value}"
 								]);
 								return;
 							} else {
-								echo Lib::html_esc(file_get_contents($path2));
+								echo Lib::html_esc(file_get_contents($path));
 							}
 							break;
 					}
