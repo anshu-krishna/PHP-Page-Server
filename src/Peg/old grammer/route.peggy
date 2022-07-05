@@ -10,25 +10,25 @@
 Exp = _ r:Route _ { return r; }
 Route
 	= "@" r:STR { return { import: r }; }
-	/ v:(STR / NONE) n:(ARROW "{" _ n:Next _ "}" { return n; })? {
+	/ v:(STR / NONE) n:(ARROW "{" _ @Next _ "}")? {
 			const ret = {};
 			ret.view = v;
 			if(n !== null) { ret.nxt = n; }
 			return ret;
 		}
 
-Next = h:NextItem t:( COMMA n:NextItem { return n; })* COMMA? { return [h, ...t]; }
+Next = h:NextItem t:( COMMA @NextItem )* COMMA? { return [h, ...t]; }
 NextItem = m:Matches COLON r:Route { return { ...m, ...r }; }
 
 Matches
 	= m:Match { return makeMatchResult([m]); }
-	/ "[" _ h:Match t:( COMMA m:Match { return m; })* COMMA? _ "]" {
+	/ "[" _ h:Match t:( COMMA @Match )* COMMA? _ "]" {
 		return makeMatchResult([h, ...t]);
 	}
-Match = s:("$" i:IDEN EQ { return i; })? MatchStr // [0] = store; [1] = Match options
+Match = s:("$" @IDEN EQ)? MatchStr // [0] = store; [1] = Match options
 MatchStr
-	= h:STR t:( OR s:STR { return s; })* { return [h, ...t]; }
-	/ "(" _ h:STR t:( OR s:STR { return s; })* _ ")" { return [h, ...t]; }
+	= h:STR t:( OR @STR )* { return [h, ...t]; }
+	/ "(" _ h:STR t:( OR @STR )* _ ")" { return [h, ...t]; }
 
 
 STR = '`' s:$[^\x60]* '`' { return s; }
