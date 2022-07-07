@@ -210,10 +210,13 @@ final class Server {
 			static::echo_view($root);
 		}
 		if(static::$CFG->dev_mode && array_key_exists('REQUEST_TIME_FLOAT', $_SERVER)) {
-			static::echo_debug('Runtime (ms): ' . round(
-				(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
-				3
-			));
+			static::echo_debug([
+				'Runtime (ms)' => round(
+					(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
+					3
+				),
+				'Peak Memory (MB)' => round(memory_get_peak_usage(true) / (1024 * 1024), 5)
+			]);
 		}
 	}
 }
