@@ -3,11 +3,11 @@
 	"files": [
 		{
 			"ip": "template.peggy",
-			"class": "Template"
+			"class": "TemplateParser"
 		},
 		{
 			"ip": "route.peggy",
-			"class": "Route"
+			"class": "RouteParser"
 		}
 	]	
 }

@@ -63,7 +63,7 @@ if (!class_exists("KPS\\Peg\\SyntaxError", false)) {
     }
 }
 
-class Template {
+class TemplateParser {
     private $peg_currPos          = 0;
     private $peg_reportedPos      = 0;
     private $peg_cachedPos        = 0;

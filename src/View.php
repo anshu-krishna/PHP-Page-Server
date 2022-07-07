@@ -2,10 +2,10 @@
 namespace KPS;
 
 use KPS\Msg\Error as ErrMsg;
-use KPS\Peg\Template;
+use KPS\Peg\TemplateParser;
 
 class View {
-	public static Template $template_parser;
+	public static TemplateParser $template_parser;
 
 	public readonly ?string $path;
 	public function __construct(private string $file_name, ?string $base_dir = null) {

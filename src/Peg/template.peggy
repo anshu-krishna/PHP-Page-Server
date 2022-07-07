@@ -8,11 +8,14 @@
 {
 	const content = [];
 	let html = [];
-	function add_content(item) {
+	function reset_html() {
 		if(html.length > 0) {
 			content.push([0, html.join('')]);
 			html = [];
 		}
+	}
+	function add_content(item) {
+		reset_html();
 		content.push(item);
 	}
 	/** <?php
@@ -21,10 +24,7 @@
 	**/
 }
 Exp = a:( FileExp / ValExp / Text )* EOF {
-		if(html.length > 0) {
-			content.push([0, html.join('')]);
-			html = [];
-		}
+		reset_html();
 		return content;
 		/** <?php
 		Helper::view_reset_html();

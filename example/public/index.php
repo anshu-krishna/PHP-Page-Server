@@ -14,4 +14,37 @@ Server::init(
 	)
 );
 
-Server::execute();
+//Server::execute();
+
+
+$txt = <<<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ABC</title>
+</head>
+<body>
+[[ `app/header.php` ]]
+\\[[ `app/header.php` ]]
+\\\\[[ `app/header.php` ]]
+{? _REQ_ ?}
+</body>
+</html>
+EOF;
+
+// var_dump($txt);
+
+$open = ["[[", "[<", "[-", "{{", "{<", "{?"];
+$close = ["]]", ">]", "-]", "}}", ">}", "?}"];
+
+$parts = [];
+$tok = strtok($txt, "[");
+$parts[] = $tok;
+$tok = strtok("[<-");
+$parts[] = $tok;
+$tok = strtok("->]");
+$parts[] = $tok;
+$tok = strtok("]");
+$parts[] = $tok;
+var_dump($parts);

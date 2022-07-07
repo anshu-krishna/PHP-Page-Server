@@ -81,8 +81,8 @@ final class Server {
 
 
 		/* Setup Peg Parsers */
-		View::$template_parser = new \KPS\Peg\Template;
-		Route::$route_parser = new \KPS\Peg\Route;
+		View::$template_parser = new \KPS\Peg\TemplateParser;
+		Route::$route_parser = new \KPS\Peg\RouteParser;
 
 		/* Setup REQ */
 		{
