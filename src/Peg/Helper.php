@@ -23,4 +23,17 @@ class Helper {
 		}
 		return $ret;
 	}
+
+	public static array $view_content = [];
+	public static array $view_html = [];
+	public static function view_reset_html() {
+		if(count(static::$view_html) > 0) {
+			static::$view_content[] = [0, implode('', static::$view_html)];
+			static::$view_html = [];
+		}
+	}
+	public static function view_add_content($item) {
+		static::view_reset_html();
+		static::$view_content[] = $item;
+	}
 }

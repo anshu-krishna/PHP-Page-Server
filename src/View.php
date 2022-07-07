@@ -22,6 +22,7 @@ class View {
 		// Init Variables
 		$_PATH = &\KPS\Server::$_VALS['_REQ_']['path'];
 		$_QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
+		$_SERVER_CFG = &\KPS\Server::$CFG;
 
 		// Include content
 		ob_start();
@@ -32,11 +33,12 @@ class View {
 			$content = static::$template_parser->parse($content);
 		} catch (\KPS\Peg\SyntaxError $er) {
 			echo ErrMsg::create([
-				'type' => 'Parse Error',
-				'file' => $path,
+				'type' => 'View Parse Error',
+				'file' => $this->path,
 				// 'line' => $er->grammarLine,
 				'msg' => $er->getMessage(),
 				// 'content' => $content,
+				// 'content' => explode("\n", $content),
 			]);
 			// echo $content;
 			return null;

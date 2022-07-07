@@ -14,7 +14,6 @@ use KPS\Msg\Debug as DebugMsg;
 final class Server {
 	use \Krishna\Utilities\StaticOnlyTrait;
 
-	// private static float $start_time = 0.0;
 	private static bool $init_flag = false;
 	public static ServerCfg $CFG;
 	public static array $_VALS = [
@@ -38,6 +37,7 @@ final class Server {
 
 	public static function init(
 		?string $views_dir = null,
+		?string $routes_dir = null,
 		?MsgCfg $msg_config = null,
 		bool $dev_mode = false,
 		// bool $minify_html = false
@@ -45,14 +45,13 @@ final class Server {
 		/* Stop second run */
 		if(static::$init_flag) { return; }
 		static::$init_flag = true;
-		// if(static::$start_time !== 0.0) { return; }
-		// static::$start_time = microtime(true);
 
 		/* Setup Config */
 		{
 			static::$CFG = new ServerCfg(
 				dev_mode: $dev_mode,
 				views_dir: $views_dir ?? '',
+				routes_dir: $routes_dir ?? '',
 				msg: $msg_config ?? new MsgCfg(),
 				// minify_html: $minify_html
 			);
@@ -63,7 +62,15 @@ final class Server {
 				exit;
 			} else {
 				static::$CFG->views_dir = $views_path;
-			}			
+			}
+			$routes_path = realpath($routes_dir ?? '../src/routes');
+			if($routes_path === false) {
+				http_response_code(500);
+				echo ErrMsg::create(["Invalid Route Directory" => $routes_dir]);
+				exit;
+			} else {
+				static::$CFG->routes_dir = $routes_path;
+			}
 		}
 
 		/* Setup Error Handling */
@@ -75,6 +82,7 @@ final class Server {
 
 		/* Setup Peg Parsers */
 		View::$template_parser = new \KPS\Peg\Template;
+		Route::$route_parser = new \KPS\Peg\Route;
 
 		/* Setup REQ */
 		{

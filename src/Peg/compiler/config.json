@@ -2,7 +2,7 @@
 	"namespace": "KPS\\Peg",
 	"files": [
 		{
-			"ip": "Template 04-js-php.peggy",
+			"ip": "template.peggy",
 			"class": "Template"
 		},
 		{

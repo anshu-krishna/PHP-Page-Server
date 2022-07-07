@@ -5,7 +5,7 @@
 	<title>ABC</title>
 </head>
 <body>
-[[ "app/header.php" ]]
+[[ `app/header.php` ]]
 {? _REQ_ ?}
 </body>
 </html>
