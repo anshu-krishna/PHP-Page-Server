@@ -289,27 +289,25 @@ class Route {
     private $peg_c59;
     private $peg_c60;
 
-    private function peg_f0($r) { return r; }
-    private function peg_f1($r) { return { import: r }; }
-    private function peg_f2($v, $n) { return n; }
+    private function peg_f0($r) { return $r; }
+    private function peg_f1($r) { return ['import' => $r]; }
+    private function peg_f2($v, $n) { return $n; }
     private function peg_f3($v, $n) {
-    			const ret = {};
-    			ret.view = v;
-    			if(n !== null) { ret.nxt = n; }
-    			return ret;
-    		}
-    private function peg_f4($h, $n) { return n; }
-    private function peg_f5($h, $t) { return [h, ...t]; }
-    private function peg_f6($m, $r) { return { ...m, ...r }; }
-    private function peg_f7($m) { return makeMatchResult([m]); }
-    private function peg_f8($h, $m) { return m; }
-    private function peg_f9($h, $t) {
-    		return makeMatchResult([h, ...t]);
-    	}
-    private function peg_f10($i) { return i; }
-    private function peg_f11($h, $s) { return s; }
-    private function peg_f12($s) { return s; }
-    private function peg_f13() { return false; }
+    			$ret = [ 'view' => $v ];
+    			if($n !== null) { $ret['nxt'] = $n; }
+    			return $ret;
+    			}
+    private function peg_f4($h, $n) { return $n; }
+    private function peg_f5($h, $t) { return [$h, ...$t]; }
+    private function peg_f6($m, $r) { return [...$m, ...$r];  }
+    private function peg_f7($m) { return Helper::makeMatchResult([$m]); }
+    private function peg_f8($h, $m) { return $m; }
+    private function peg_f9($h, $t) { return Helper::makeMatchResult([$h, ...$t]); }
+    private function peg_f10($i) { return $i; }
+    private function peg_f11($h, $s) { return $s; }
+    private function peg_f12($h, $t) { return [$h, ...$t];  }
+    private function peg_f13($s) { return $s; }
+    private function peg_f14() { return false; }
 
     private function peg_parseExp() {
 
@@ -829,7 +827,7 @@ class Route {
                   }
                   if ($s6 !== $this->peg_FAILED) {
                     $this->peg_reportedPos = $s0;
-                    $s1 = $this->peg_f5($s3, $s4);
+                    $s1 = $this->peg_f12($s3, $s4);
                     $s0 = $s1;
                   } else {
                     $this->peg_currPos = $s0;
@@ -913,7 +911,7 @@ class Route {
           }
           if ($s3 !== $this->peg_FAILED) {
             $this->peg_reportedPos = $s0;
-            $s1 = $this->peg_f12($s2);
+            $s1 = $this->peg_f13($s2);
             $s0 = $s1;
           } else {
             $this->peg_currPos = $s0;
@@ -1009,7 +1007,7 @@ class Route {
       }
       if ($s1 !== $this->peg_FAILED) {
         $this->peg_reportedPos = $s0;
-        $s1 = $this->peg_f13();
+        $s1 = $this->peg_f14();
       }
       $s0 = $s1;
 
@@ -1582,13 +1580,7 @@ class Route {
     }
 
     /* BEGIN initializer code */
-
-    	function makeMatchResult(list) {
-    		const storeEntries = list.map((item, idx) => [item[0], idx ]).filter(item => item[0] !== null);
-    		const m = list.map(i => i[1]);
-    		return storeEntries.length ? { match: m, store: Object.fromEntries(storeEntries) } : { match: m };
-    	}
-
+     
     /* END initializer code */
 
     $peg_result = call_user_func($peg_startRuleFunction);

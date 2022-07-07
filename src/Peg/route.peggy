@@ -1,37 +1,41 @@
 /*********************** GRAMMER ***********************/
 {
 	function makeMatchResult(list) {
-		const storeEntries = list.map((item, idx) => [item[0], idx ]).filter(item => item[0] !== null);
+		const storeEntries = list.map((item, idx) => [item[0], idx]).filter(item => item[0] !== null);
 		const m = list.map(i => i[1]);
 		return storeEntries.length ? { match: m, store: Object.fromEntries(storeEntries) } : { match: m };
 	}
+	/**<?php ?>**/
 }
 
-Exp = _ r:Route _ { return r; }
+Exp = _ r:Route _ { return r; /**<?php return $r; ?>**/ }
 Route
-	= "@" r:STR { return { import: r }; }
-	/ v:(STR / NONE) n:(ARROW "{" _ n:Next _ "}" { return n; })? {
-			const ret = {};
-			ret.view = v;
+	= "@" r:STR { return { import: r }; /**<?php return ['import' => $r]; ?>**/ }
+	/ v:(STR / NONE) n:(ARROW "{" _ n:Next _ "}" { return n; /**<?php return $n; ?>**/ })? {
+			const ret = { view: v };
 			if(n !== null) { ret.nxt = n; }
 			return ret;
+			/**<?php
+			$ret = [ 'view' => $v ];
+			if($n !== null) { $ret['nxt'] = $n; }
+			return $ret;
+			?>**/
 		}
 
-Next = h:NextItem t:( COMMA n:NextItem { return n; })* COMMA? { return [h, ...t]; }
-NextItem = m:Matches COLON r:Route { return { ...m, ...r }; }
+Next = h:NextItem t:( COMMA n:NextItem { return n; /**<?php return $n; ?>**/ })* COMMA? { return [h, ...t]; /**<?php return [$h, ...$t]; ?>**/ }
+NextItem = m:Matches COLON r:Route { return { ...m, ...r }; /**<?php return [...$m, ...$r];  ?>**/ }
 
 Matches
-	= m:Match { return makeMatchResult([m]); }
-	/ "[" _ h:Match t:( COMMA m:Match { return m; })* COMMA? _ "]" {
-		return makeMatchResult([h, ...t]);
+	= m:Match { return makeMatchResult([m]); /**<?php return Helper::makeMatchResult([$m]); ?>**/ }
+	/ "[" _ h:Match t:( COMMA m:Match { return m; /**<?php return $m; ?>**/ })* COMMA? _ "]" {
+		return makeMatchResult([h, ...t]); /**<?php return Helper::makeMatchResult([$h, ...$t]); ?>**/
 	}
-Match = s:("$" i:IDEN EQ { return i; })? MatchStr // [0] = store; [1] = Match options
+Match = s:("$" i:IDEN EQ { return i; /**<?php return $i; ?>**/ })? MatchStr // [0] = store; [1] = Match options
 MatchStr
-	= h:STR t:( OR s:STR { return s; })* { return [h, ...t]; }
-	/ "(" _ h:STR t:( OR s:STR { return s; })* _ ")" { return [h, ...t]; }
+	= h:STR t:( OR s:STR { return s; /**<?php return $s; ?>**/ })* { return [h, ...t]; /**<?php return [$h, ...$t]; ?>**/ }
+	/ "(" _ h:STR t:( OR s:STR { return s; /**<?php return $s; ?>**/ })* _ ")" { return [h, ...t]; /**<?php return [$h, ...$t];  ?>**/ }
 
-
-STR = '`' s:$[^\x60]* '`' { return s; }
+STR = '`' s:$[^\x60]* '`' { return s; /**<?php return $s; ?>**/ }
 IDEN "VarName" = $([a-z_]i [a-z0-9_]i*)
 NONE = "none"i { return false; }
 ARROW "->" = _ "->"_
