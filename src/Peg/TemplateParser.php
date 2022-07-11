@@ -301,7 +301,7 @@ class TemplateParser {
     		Helper::view_reset_html();
     		return Helper::$view_content;
     		}
-    private function peg_f1($i) { Helper::$view_html[] = $i; }
+    private function peg_f1($i) { Helper::$view_html .= $i; }
     private function peg_f2($f) { Helper::view_add_content([ 2, 0, $f ]); }
     private function peg_f3($f) { Helper::view_add_content([ 2, 1, $f ]); }
     private function peg_f4($f) { Helper::view_add_content([ 2, 2, $f ]); }
@@ -1587,7 +1587,7 @@ class TemplateParser {
     /* BEGIN initializer code */
 
     	Helper::$view_content = [];
-    	Helper::$view_html = []; 
+    	Helper::$view_html = ''; 
     /* END initializer code */
 
     $peg_result = call_user_func($peg_startRuleFunction);

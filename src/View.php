@@ -24,10 +24,13 @@ class View {
 		$_QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
 		$_SERVER_CFG = &\KPS\Server::$CFG;
 
+		// $_1 = microtime(true);
 		// Include content
 		ob_start();
 		include $this->path;
 		$content = ob_get_clean();
+		
+		// $_2 = microtime(true);
 		
 		try {
 			$content = static::$template_parser->parse($content);
@@ -43,6 +46,12 @@ class View {
 			// echo $content;
 			return null;
 		}
+		
+		// $_3 = microtime(true);
+		// $_32 = round(($_3 - $_2) * 1000, 3);
+		// $_21 = round(($_2 - $_1) * 1000, 3);
+		// $content[] = [0, "<pre>Include: {$this->path}\nImport = {$_21}\nParser = {$_32}</pre>"];
+
 		return $content;
 	}
 }

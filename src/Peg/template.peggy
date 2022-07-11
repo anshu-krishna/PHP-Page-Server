@@ -7,11 +7,11 @@
 */
 {
 	const content = [];
-	let html = [];
+	let html = '';
 	function reset_html() {
 		if(html.length > 0) {
-			content.push([0, html.join('')]);
-			html = [];
+			content.push([0, html]);
+			html = '';
 		}
 	}
 	function add_content(item) {
@@ -20,7 +20,7 @@
 	}
 	/** <?php
 	Helper::$view_content = [];
-	Helper::$view_html = []; ?>
+	Helper::$view_html = ''; ?>
 	**/
 }
 Exp = a:( FileExp / ValExp / Text )* EOF {
@@ -33,9 +33,9 @@ Exp = a:( FileExp / ValExp / Text )* EOF {
 	}
 
 Text
-	= i:"\\\\" &ExpStart { html.push("\\"); /** <?php Helper::$view_html[] = $i; ?> **/ }
-	/ "\\" i:ExpStart { html.push(i); /** <?php Helper::$view_html[] = $i; ?> **/ }
-	/ i:. { html.push(i); /** <?php Helper::$view_html[] = $i; ?> **/ }
+	= i:"\\\\" &ExpStart { html += "\\"; /** <?php Helper::$view_html .= $i; ?> **/ }
+	/ "\\" i:ExpStart { html += i; /** <?php Helper::$view_html .= $i; ?> **/ }
+	/ i:. { html += i; /** <?php Helper::$view_html .= $i; ?> **/ }
 
 EOF = !.
 
