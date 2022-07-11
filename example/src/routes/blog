@@ -1,7 +1,8 @@
 none -> {
 	[
-		$year = `/\d{4}/`,
-		`-`,
+		$day = `\d{2}`,
 		$month = (`/\d{2}/` | `jan` | `feb` | `mar` | `apr` | `may` | `jun` | `jul` | `aug` | `sep` | `oct` | `nov` | `dec`)
+		`-`,
+		$year = `/\d{4}/`,
 	] : `blog_date.php`
 }
