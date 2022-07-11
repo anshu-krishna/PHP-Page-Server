@@ -44,7 +44,7 @@ class Route {
 				$this->nxt[] = new static($n);
 			}
 		} catch(\KPS\Peg\SyntaxError $th) {
-			throw new \Exception("Invalid route file: {$this->import}l Line: {$th->grammarLine}; Message: {$th->getMessage()}");
+			throw new \Exception("Invalid route file: {$this->import}; Line: {$th->grammarLine}; Message: {$th->getMessage()}");
 		}
 	}
 
