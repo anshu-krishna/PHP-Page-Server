@@ -17,7 +17,7 @@ final class Server {
 	private static bool $init_flag = false;
 	public static ServerCfg $CFG;
 	public static array $_VALS = [
-		"_REQ_" => [ "path" => null, "query" => null ]
+		'_REQ_' => [ 'path' => null, 'query' => null , 'pathvars' => []]
 	];
 
 	public static function echo_debug(mixed $value, ?MsgCfg $cfg = null) {
@@ -96,7 +96,7 @@ final class Server {
 			$REQ['path'] = explode('/', $REQ['path']);
 
 			if('' === ($REQ['path'][0] ?? false)) {
-				array_shift(($REQ['path']));
+				array_shift($REQ['path']);
 			}
 
 			/* Extract request query */
@@ -194,6 +194,7 @@ final class Server {
 		}
 	}
 	private static function get_root_view() : ?string {
+		
 		/*
 			Matches the REQ to list of routes;
 			Returns the root template file or null;
@@ -202,13 +203,24 @@ final class Server {
 	}
 	public static function execute() {
 		static::init();
-		$root = static::get_root_view();
-		if($root === null) {
+
+		$root = new Route(['import' => '_root_']);
+		$final_view = false;
+		try {
+			$final_view = $root->find_view(static::$_VALS['_REQ_']['path']);
+		} catch (\Throwable $th) {
+			http_response_code(500);
+			static::echo_view('500.php');
+			echo ErrMsg::create($th->getMessage());
+			exit;
+		}
+		if($final_view === false) {
 			http_response_code(404);
 			static::echo_view('404.php');
-		} else {
-			static::echo_view($root);
+			exit;
 		}
+		static::echo_view($final_view);
+		
 		if(static::$CFG->dev_mode && array_key_exists('REQUEST_TIME_FLOAT', $_SERVER)) {
 			static::echo_debug([
 				'Runtime (ms)' => round(

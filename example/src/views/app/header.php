@@ -6,4 +6,3 @@
 		: '[[ `./navbar1.html` ]]'
 	?>
 </header>
-<?php var_dump($_SERVER_CFG);

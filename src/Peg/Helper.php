@@ -36,4 +36,13 @@ class Helper {
 		static::view_reset_html();
 		static::$view_content[] = $item;
 	}
+	public static function sanitise_route_match_str(string $m) {
+		if('/' === ($m[0] ?? '')) { // Is regex
+			// Sanitize regex pattern
+			$i = substr($m, -2, 1) === '/';
+			$m = substr($m, 1, $i ? -2: -1);
+			$m = '/(' . $m . ')/' . ($i ? 'i' : '');
+		}
+		return $m;
+	}
 }

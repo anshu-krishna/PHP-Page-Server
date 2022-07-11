@@ -8,15 +8,19 @@ class View {
 	public static TemplateParser $template_parser;
 
 	public readonly ?string $path;
-	public function __construct(private string $file_name, ?string $base_dir = null) {
-		$this->path = Lib::resolve_path(Server::$CFG->views_dir, $this->file_name, $base_dir);
+	private $error = null;
+	public function __construct(string $file_name, ?string $base_dir = null) {
+		$this->path = Lib::resolve_path(Server::$CFG->views_dir, $file_name, $base_dir);
+		if($this->path === null) {
+			$this->error = [
+				'View not found' => Server::$CFG->views_dir . "/{$file_name}"
+			];
+		}
 	}
 	public function content() : ?array {
 		// Check if valid file;
-		if($this->path === null) {
-			echo ErrMsg::create([
-				'View not found' => Server::$CFG->views_dir . "/{$this->file_name}"
-			]);
+		if($this->error !== null) {
+			echo ErrMsg::create($this->error);
 			return null;
 		}
 		// Init Variables

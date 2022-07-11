@@ -304,10 +304,11 @@ class RouteParser {
     private function peg_f8($h, $m) { return $m; }
     private function peg_f9($h, $t) { return Helper::makeMatchResult([$h, ...$t]); }
     private function peg_f10($i) { return $i; }
-    private function peg_f11($h, $s) { return $s; }
-    private function peg_f12($h, $t) { return [$h, ...$t];  }
-    private function peg_f13($s) { return $s; }
-    private function peg_f14() { return false; }
+    private function peg_f11($h, $s) { return Helper::sanitise_route_match_str($s); }
+    private function peg_f12($h, $t) { return [Helper::sanitise_route_match_str($h), ...$t]; }
+    private function peg_f13($h, $t) { return [Helper::sanitise_route_match_str($h), ...$t];  }
+    private function peg_f14($s) { return $s; }
+    private function peg_f15() { return false; }
 
     private function peg_parseExp() {
 
@@ -751,7 +752,7 @@ class RouteParser {
         }
         if ($s2 !== $this->peg_FAILED) {
           $this->peg_reportedPos = $s0;
-          $s1 = $this->peg_f5($s1, $s2);
+          $s1 = $this->peg_f12($s1, $s2);
           $s0 = $s1;
         } else {
           $this->peg_currPos = $s0;
@@ -827,7 +828,7 @@ class RouteParser {
                   }
                   if ($s6 !== $this->peg_FAILED) {
                     $this->peg_reportedPos = $s0;
-                    $s1 = $this->peg_f12($s3, $s4);
+                    $s1 = $this->peg_f13($s3, $s4);
                     $s0 = $s1;
                   } else {
                     $this->peg_currPos = $s0;
@@ -911,7 +912,7 @@ class RouteParser {
           }
           if ($s3 !== $this->peg_FAILED) {
             $this->peg_reportedPos = $s0;
-            $s1 = $this->peg_f13($s2);
+            $s1 = $this->peg_f14($s2);
             $s0 = $s1;
           } else {
             $this->peg_currPos = $s0;
@@ -1007,7 +1008,7 @@ class RouteParser {
       }
       if ($s1 !== $this->peg_FAILED) {
         $this->peg_reportedPos = $s0;
-        $s1 = $this->peg_f14();
+        $s1 = $this->peg_f15();
       }
       $s0 = $s1;
 
