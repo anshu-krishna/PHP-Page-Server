@@ -1,15 +1,5 @@
-`app.php` -> {
-	`home` : `home.php`,
-	`blog` : none -> {
-		[$year = `/\d{4}/`, `-`, $month = `/\d{2}/`] : `blog_date.php`,
-		$title = `/.{5}/` : `blog_title.php`
-	},
-	// `about` : @`other.route`,
-	(`xyz`|`zyx`) : `xyz.php` -> {
-		`pqr` : `pqr.php`,
-		`rst` : `rst.php`,
-		`abc` : `abc.php`
-	},
+`home.php` -> {
+	`blog` : @`blog`,
 	$user = `/[_a-z0-9]+/i` : `user.php` -> {
 		`profile` : `user_profile.php`
 	},

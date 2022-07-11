@@ -27,6 +27,7 @@ class View {
 		$_PATH = &\KPS\Server::$_VALS['_REQ_']['path'];
 		$_QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
 		$_SERVER_CFG = &\KPS\Server::$CFG;
+		$_PATH_VARS = &\KPS\Server::$_VALS['_REQ_']['pathvars'];
 
 		// $_1 = microtime(true);
 		// Include content

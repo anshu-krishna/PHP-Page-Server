@@ -193,14 +193,6 @@ final class Server {
 			}
 		}
 	}
-	private static function get_root_view() : ?string {
-		
-		/*
-			Matches the REQ to list of routes;
-			Returns the root template file or null;
-		*/
-		return 'app.php';
-	}
 	public static function execute() {
 		static::init();
 

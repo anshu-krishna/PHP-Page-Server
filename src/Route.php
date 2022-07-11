@@ -48,7 +48,7 @@ class Route {
 		}
 	}
 
-	private function match(string $path_item) {
+	private function match_item(string $path_item) {
 		$this->import();
 		if($this->match === null) {
 			return $path_item === '';
@@ -96,7 +96,7 @@ class Route {
 		foreach($path as $item) {
 			$no_nxt = true;
 			foreach($node->nxt as $n) {
-				if($n->match($item)) {
+				if($n->match_item($item)) {
 					$node = $n;
 					$no_nxt = false;
 					break;

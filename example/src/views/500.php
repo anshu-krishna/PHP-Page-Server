@@ -5,8 +5,9 @@
 	<title>ABC</title>
 </head>
 <body>
-[[ `app/header.php` ]]
-
-{? _REQ_ ?}
+[[ `common/header.php` ]]
+<p>
+	500: Server Error;
+</p>
 </body>
 </html>
