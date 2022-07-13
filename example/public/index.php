@@ -21,7 +21,7 @@ Server::init(
 
 
 function dump($item) {
-	echo '<hr><pre>', htmlentities(json_encode($item, \JSON_PRETTY_PRINT)), '</pre>';
+	echo '<pre>', htmlentities(json_encode($item, \JSON_PRETTY_PRINT)), '</pre>';
 };
 
 $html = <<<'EOF'
@@ -75,15 +75,15 @@ function three_parts(string $str) {
 		case 2:
 			return [
 				null,
-				mb_substr($str, 0, $p1, 'UTF-8'),
-				mb_substr($str, $p1, null, 'UTF-8')
+				substr($str, 0, $p1),
+				substr($str, $p1, null)
 			];
 		default:
 			$p2 = $p1 - 2;
 			return [
-				mb_substr($str , 0, $p2, 'UTF-8'),
-				mb_substr($str, $p2, 2, 'UTF-8'),
-				mb_substr($str, $p1, null, 'UTF-8')
+				substr($str , 0, $p2),
+				substr($str, $p2, 2),
+				substr($str, $p1, null)
 			];
 	}
 }
@@ -97,6 +97,10 @@ function splitter($str) {
 
 foreach([$t1, $t2, $t3, $t4, $t5] as $t) {
 	echo '<hr>';
-	dump(['in' => 0, 'out' => splitter($t)]);
+	dump([
+		// 'in' => $t,
+		'out' => splitter($t)
+	]);
+	// echo $t;
 }
 // dump(splitter($html));
