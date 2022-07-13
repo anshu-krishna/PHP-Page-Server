@@ -9,5 +9,7 @@
 <p>
 	Welcome to home page;
 </p>
+\[[ `common/header.php` ]]
+<?php var_dump($_SERVER_CFG); ?>
 </body>
 </html>
