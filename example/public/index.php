@@ -17,45 +17,86 @@ Server::init(
 // Server::execute();
 
 
+
+
+
+function dump($item) {
+	echo '<hr><pre>', htmlentities(json_encode($item, \JSON_PRETTY_PRINT)), '</pre>';
+};
+
 $html = <<<'EOF'
-hksdafhhlsdajdhldsa
-\\[[ `common/1.php` ]]
-[[ `common/2.php` ]]
-[<i>2</i>] \[[ `common/3.php` ]] <i>public</i> <i>string</i>
+<!DOCTYPE html>
+<body>
+ab[[ `common/header.php` ]]
+<p>
+	Welcome to home page;
+</p>
+\[[ `common/header.php` ]]
+<?php var_dump($_SERVER_CFG); ?>
+</body>
+</html>
 EOF;
-$html2 = <<<'EOF'
-jdsa l;adsj lsd;f
+
+$t1 = <<<'EOF'
+line 1
+ab[[ `common/header.php` ]]
+line2
 EOF;
 
-function splitter($str) {
-	$parts = preg_split('/(\[(?:\[|<|{))|({(?:{|<|\?))/', $str, 2, \PREG_SPLIT_OFFSET_CAPTURE|\PREG_SPLIT_DELIM_CAPTURE);
-	if(count($parts) === 1) {
-		return [$parts[0][0]];
-	} else {
-		$s0 = &$parts[0][0];
-		$s1 = &$parts[1][0];
-		$s2 = &$parts[2][0];
+$t2 = <<<'EOF'
+ab[[ `common/header.php` ]]
+line2
+EOF;
 
-		$p1 = $parts[1][1] - 1;
-		$p2 = $parts[1][1] - 2;
+$t3 = <<<'EOF'
+b[[ `common/header.php` ]]
+line2
+EOF;
 
-		// var_dump($parts);
+$t4 = <<<'EOF'
+[[ `common/header.php` ]]
+line2
+EOF;
 
-		if($p1 > -1 && $s0[$p1] === "\\") {
-			if($p2 > -1 && $s0[$p2] === "\\") {
-				$r = splitter($s2);
-				if(count($r) > 1) {
-					return [$s0 . $s1 . $r[0], $r[1]];
-				} else {
-					return [$s0 . $s1 . $r[0]];
-				}
-			} else {
-				return [mb_substr($s0, 0, -1, 'UTF-8') , $s1 . $s2];
-			}
-		} else {
-			return [$s0, $s1 . $s2];
-		}
+$t5 = <<<'EOF'
+line2
+EOF;
+
+$patt = '/(?:\[(?:\[|<|{))|(?:{(?:{|<|\?))/s';
+
+function three_parts(string $str) {
+	global $patt;
+	preg_match($patt, $str, $p1, PREG_OFFSET_CAPTURE);
+	$p1 = $p1[0][1] ?? -1;
+	switch($p1) {
+		case -1: return [null, null, $str];
+		case 0: return [null, '', $str];
+		case 1:
+		case 2:
+			return [
+				null,
+				mb_substr($str, 0, $p1, 'UTF-8'),
+				mb_substr($str, $p1, null, 'UTF-8')
+			];
+		default:
+			$p2 = $p1 - 2;
+			return [
+				mb_substr($str , 0, $p2, 'UTF-8'),
+				mb_substr($str, $p2, 2, 'UTF-8'),
+				mb_substr($str, $p1, null, 'UTF-8')
+			];
 	}
 }
-var_dump(splitter($html2));
-var_dump(splitter($html));
+
+function splitter($str) {
+	$final = [];
+	$parts = three_parts($str);
+	var_dump($parts);
+	return $final;
+}
+
+foreach([$t1, $t2, $t3, $t4, $t5] as $t) {
+	echo '<hr>';
+	dump(['in' => 0, 'out' => splitter($t)]);
+}
+// dump(splitter($html));

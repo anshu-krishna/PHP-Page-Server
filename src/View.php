@@ -2,6 +2,7 @@
 namespace KPS;
 
 use KPS\Msg\Error as ErrMsg;
+use KPS\Peg\HybridTemplateParser;
 use KPS\Peg\TemplateParser;
 
 class View {
@@ -34,23 +35,24 @@ class View {
 		ob_start();
 		include $this->path;
 		$content = ob_get_clean();
-		
+
+		$content = HybridTemplateParser::parser($content);
 		// $_2 = microtime(true);
 		
-		try {
-			$content = static::$template_parser->parse($content);
-		} catch (\KPS\Peg\SyntaxError $er) {
-			echo ErrMsg::create([
-				'type' => 'View Parse Error',
-				'file' => $this->path,
-				// 'line' => $er->grammarLine,
-				'msg' => $er->getMessage(),
-				// 'content' => $content,
-				// 'content' => explode("\n", $content),
-			]);
-			// echo $content;
-			return null;
-		}
+		// try {
+		// 	$content = static::$template_parser->parse($content);
+		// } catch (\KPS\Peg\SyntaxError $er) {
+		// 	echo ErrMsg::create([
+		// 		'type' => 'View Parse Error',
+		// 		'file' => $this->path,
+		// 		// 'line' => $er->grammarLine,
+		// 		'msg' => $er->getMessage(),
+		// 		// 'content' => $content,
+		// 		// 'content' => explode("\n", $content),
+		// 	]);
+		// 	// echo $content;
+		// 	return null;
+		// }
 		
 		// $_3 = microtime(true);
 		// $_32 = round(($_3 - $_2) * 1000, 3);
