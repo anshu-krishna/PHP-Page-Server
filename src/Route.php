@@ -3,6 +3,7 @@ namespace KPS;
 
 use KPS\Msg\Error as ErrMsg;
 use KPS\Peg\RouteParser;
+use Krishna\Utilities\JSON;
 
 class Route {
 	public static RouteParser $route_parser;
@@ -32,20 +33,44 @@ class Route {
 			$this->nxt[] = new static($n);
 		}
 	}
-
+	private static function use_cache(string $cache_file, string $route_file) : bool {
+		set_error_handler(function() {});
+		$c = filemtime($cache_file);
+		$r = filemtime($route_file);
+		restore_error_handler();
+		if($c === false || $r === false) { return false; }
+		return $c >= $r;
+	}
 	private function import() {
 		if($this->import === null) { return; }
-		try {
-			$data = static::$route_parser->parse(file_get_contents($this->import));
-			$this->import = null;
-			$this->view = $data['view'];
-			$this->store = $data['store'] ?? [];
-			foreach($data['nxt'] ?? [] as $n) {
-				$this->nxt[] = new static($n);
+		
+		// $_1 = microtime(true); $route_file = $this->import;
+		
+		$cache_file = $this->import . '.json';
+		$use_cache = static::use_cache($cache_file, $this->import);
+		if($use_cache) {
+			$data = JSON::decode(file_get_contents($cache_file));
+		} else {
+			try {
+				$data = static::$route_parser->parse(file_get_contents($this->import));
+				file_put_contents($cache_file, JSON::encode($data));
+			} catch (\KPS\Peg\SyntaxError $th) {
+				throw new \Exception("Invalid route file: {$this->import}; Line: {$th->grammarLine}; Message: {$th->getMessage()}");
 			}
-		} catch(\KPS\Peg\SyntaxError $th) {
-			throw new \Exception("Invalid route file: {$this->import}; Line: {$th->grammarLine}; Message: {$th->getMessage()}");
 		}
+		$this->import = null;
+		$this->view = $data['view'];
+		$this->store = $data['store'] ?? [];
+		foreach($data['nxt'] ?? [] as $n) {
+			$this->nxt[] = new static($n);
+		}
+
+		// $_2 = microtime(true);
+		// $_21 = round(($_2 - $_1) * 1000, 3);
+		// Server::echo_debug([
+		// 	'Include' => $use_cache ? $cache_file : $route_file,
+		// 	'Time' => "{$_21} ms"
+		// ]);
 	}
 
 	private function match_item(string $path_item) {

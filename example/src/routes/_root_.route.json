@@ -1,0 +1,1 @@
+{"view":"home.php","nxt":[{"match":[["blog"]],"import":"blog.route"},{"match":[["\/([_a-z0-9]+)\/i"]],"store":{"user":0},"view":"user.php","nxt":[{"match":[["profile"]],"view":"user_profile.php"}]}]}
