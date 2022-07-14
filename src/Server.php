@@ -18,7 +18,8 @@ final class Server {
 	public static ServerCfg $CFG;
 	public static array $_VALS = [
 		'_URL' => null,
-		'_QUERY' => null
+		'_QUERY' => null,
+		'_VAL' => []
 	];
 
 	public static function echo_debug(mixed $value, ?MsgCfg $cfg = null) {

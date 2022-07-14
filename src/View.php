@@ -28,6 +28,7 @@ class View {
 		$_SERVER_CFG = &\KPS\Server::$CFG;
 		$_URL = &\KPS\Server::$_VALS['_URL'];
 		$_QUERY = &\KPS\Server::$_VALS['_QUERY'];
+		$_VAL = &\KPS\Server::$_VALS['_VAL'];
 
 		// Include content
 		// $_1 = microtime(true);
