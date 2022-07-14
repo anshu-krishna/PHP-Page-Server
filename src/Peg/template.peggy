@@ -18,7 +18,7 @@ ValExp
 	/ "{<" _ v:Val _ ">}" { return [1, 1, v]; /** <?php return [1, 1, $v]; ?> **/ }
 	/ "{?" _ v:Val _ "?}" { return [1, 2, v]; /** <?php return [1, 2, $v]; ?> **/ }
 
-Val = h:Iden t:ArrayKey* {
+Val = "$" h:Iden t:ArrayKey* {
 		return [h, ...t];
 		/** <?php return [$h, ...$t]; ?> **/
 	}

@@ -83,7 +83,7 @@ class Route {
 			return false;
 		}
 		// Store pathvars
-		$vars = &Server::$_VALS['_REQ_']['pathvars'];
+		$vars = &Server::$_VALS['_URL'];
 		foreach($this->store as $k => $idx) {
 			$vars[$k] = $matched[$idx];
 		}

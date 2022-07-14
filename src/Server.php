@@ -17,7 +17,8 @@ final class Server {
 	private static bool $init_flag = false;
 	public static ServerCfg $CFG;
 	public static array $_VALS = [
-		'_REQ_' => [ 'path' => null, 'query' => null , 'pathvars' => []]
+		'_URL' => null,
+		'_QUERY' => null
 	];
 
 	public static function echo_debug(mixed $value, ?MsgCfg $cfg = null) {
@@ -86,26 +87,27 @@ final class Server {
 
 		/* Setup REQ */
 		{
-			$REQ = &static::$_VALS['_REQ_'];
 			/* Extract request path */
-			$REQ['path'] = rtrim(urldecode($_GET['@_url_@'] ?? ''), '/');
+			$_URL = &static::$_VALS['_URL'];
+			$_URL = rtrim(urldecode($_GET['@_url_@'] ?? ''), '/');
 			unset($_GET['@_url_@']);
-			if(strcasecmp($REQ['path'], 'index.php') === 0) {
-				$REQ['path'] = [];
+			if(strcasecmp($_URL, 'index.php') === 0) {
+				$_URL = [];
 			}
-			$REQ['path'] = explode('/', $REQ['path']);
+			$_URL = explode('/', $_URL);
 
-			if('' === ($REQ['path'][0] ?? false)) {
-				array_shift($REQ['path']);
+			if('' === ($_URL[0] ?? false)) {
+				array_shift($_URL);
 			}
 
 			/* Extract request query */
-			$REQ['query'] = [];
+			$_QUERY = &static::$_VALS['_QUERY'];
+			$_QUERY = [];
 			$ct = $_SERVER['CONTENT_TYPE'] ?? false;
 			if($ct !== false && in_array('application/json', explode(';', $ct))) {
-				$REQ['query'] = JSON::decode(file_get_contents('php://input')) ?? [];
+				$_QUERY = JSON::decode(file_get_contents('php://input')) ?? [];
 			}
-			$REQ['query'] = array_merge($_POST, $REQ['query'], $_GET);
+			$_QUERY = array_merge($_POST, $_QUERY, $_GET);
 			$_GET = $_POST = [];
 		}
 	}
@@ -196,10 +198,10 @@ final class Server {
 	public static function execute() {
 		static::init();
 
-		$root = new Route(['import' => '_root_']);
+		$root = new Route(['import' => '_root_.route']);
 		$final_view = false;
 		try {
-			$final_view = $root->find_view(static::$_VALS['_REQ_']['path']);
+			$final_view = $root->find_view(static::$_VALS['_URL']);
 		} catch (\Throwable $th) {
 			http_response_code(500);
 			static::echo_view('500.php');

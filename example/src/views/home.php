@@ -9,7 +9,12 @@
 <p>
 	Welcome to home page;
 </p>
-\[[ `common/header.php` ]]
-<?php var_dump($_SERVER_CFG); ?>
+<p>
+	<code>\[[ `common/header.php` ]]</code> is used to add the common header in all the pages.
+</p>
+<p>
+	Server config is:
+	<?php var_dump($_SERVER_CFG); ?>
+</p>
 </body>
 </html>

@@ -5,3 +5,5 @@
 		<a href="#" target="_blank">About</a>
 	</nav>
 </header>
+{? $_URL ?}
+{? $_QUERY ?}

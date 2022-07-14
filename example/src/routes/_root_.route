@@ -1,5 +1,5 @@
 `home.php` -> {
-	`blog` : @`blog`,
+	`blog` : @`blog.route`,
 	$user = `/[_a-z0-9]+/i` : `user.php` -> {
 		`profile` : `user_profile.php`
 	},

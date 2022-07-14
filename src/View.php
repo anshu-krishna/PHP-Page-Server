@@ -25,10 +25,9 @@ class View {
 			return null;
 		}
 		// Init Variables
-		$_PATH = &\KPS\Server::$_VALS['_REQ_']['path'];
-		$_QUERY = &\KPS\Server::$_VALS['_REQ_']['query'];
 		$_SERVER_CFG = &\KPS\Server::$CFG;
-		$_PATH_VARS = &\KPS\Server::$_VALS['_REQ_']['pathvars'];
+		$_URL = &\KPS\Server::$_VALS['_URL'];
+		$_QUERY = &\KPS\Server::$_VALS['_QUERY'];
 
 		// Include content
 		// $_1 = microtime(true);

@@ -7,7 +7,7 @@
 <body>
 [[ `common/header.php` ]]
 <p>
-	Welcome, <?= $_PATH_VARS['user'] ?>; to user homepage;
+	Welcome, {< $_URL[`user`] >}; to user homepage;
 </p>
 </body>
 </html>

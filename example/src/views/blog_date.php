@@ -7,7 +7,7 @@
 <body>
 [[ `common/header.php` ]]
 <p>
-	Welcome to Blog from <?= $_PATH_VARS['day'] ?>-<?= $_PATH_VARS['month'] ?>-<?= $_PATH_VARS['year'] ?>
+	Welcome to Blog from <?= $_URL['day'] ?>-<?= $_URL['month'] ?>-<?= $_URL['year'] ?>
 </p>
 </body>
 </html>

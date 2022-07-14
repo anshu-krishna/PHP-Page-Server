@@ -9,6 +9,6 @@
 <p>
 	404: Page not found;
 </p>
-<small>Path: example.com/<?= implode('/',$_PATH); ?></small>
+<small>Path: example.com/<?= htmlentities(implode('/', $_URL)); ?></small>
 </body>
 </html>
