@@ -6,7 +6,7 @@ use Krishna\Utilities\StaticOnlyTrait;
 
 class HybridTemplateParser {
 	use StaticOnlyTrait;
-	private static $patt = '/(?:\[(?:\[|<|{))|(?:{(?:{|<|\?))/s';
+	private static $patt = '/(?:\[(?:\[|<|-))|(?:{(?:{|<|\?))/s';
 	private static function three_parts(string $str) {
 		preg_match(static::$patt, $str, $p1, PREG_OFFSET_CAPTURE);
 		$p1 = $p1[0][1] ?? -1;
