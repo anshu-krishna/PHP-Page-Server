@@ -30,34 +30,17 @@ class View {
 		$_SERVER_CFG = &\KPS\Server::$CFG;
 		$_PATH_VARS = &\KPS\Server::$_VALS['_REQ_']['pathvars'];
 
-		// $_1 = microtime(true);
 		// Include content
+		// $_1 = microtime(true);
 		ob_start();
 		include $this->path;
 		$content = ob_get_clean();
-
-		$content = HybridTemplateParser::parser($content);
 		// $_2 = microtime(true);
-		
-		// try {
-		// 	$content = static::$template_parser->parse($content);
-		// } catch (\KPS\Peg\SyntaxError $er) {
-		// 	echo ErrMsg::create([
-		// 		'type' => 'View Parse Error',
-		// 		'file' => $this->path,
-		// 		// 'line' => $er->grammarLine,
-		// 		'msg' => $er->getMessage(),
-		// 		// 'content' => $content,
-		// 		// 'content' => explode("\n", $content),
-		// 	]);
-		// 	// echo $content;
-		// 	return null;
-		// }
-		
+		$content = HybridTemplateParser::parser($content);
 		// $_3 = microtime(true);
 		// $_32 = round(($_3 - $_2) * 1000, 3);
 		// $_21 = round(($_2 - $_1) * 1000, 3);
-		// $content[] = [0, "<pre>Include: {$this->path}\nImport = {$_21}\nParser = {$_32}</pre>"];
+		// $content[] = [0, "<pre>Include: {$this->path}\nImport = {$_21} ms\nParser = {$_32} ms</pre>"];
 
 		return $content;
 	}

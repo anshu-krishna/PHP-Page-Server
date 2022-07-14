@@ -6,51 +6,77 @@ use Krishna\Utilities\StaticOnlyTrait;
 
 class HybridTemplateParser {
 	use StaticOnlyTrait;
-	private static function splitter($str) {
-		$parts = preg_split('/(\[(?:\[|<|{))|({(?:{|<|\?))/', $str, 2, \PREG_SPLIT_OFFSET_CAPTURE|\PREG_SPLIT_DELIM_CAPTURE);
-		if(count($parts) === 1) {
-			return [$parts[0][0]];
-		} else {
-			$s0 = &$parts[0][0];
-			$s1 = &$parts[1][0];
-			$s2 = &$parts[2][0];
-	
-			$p1 = $parts[1][1] - 1;
-			$p2 = $parts[1][1] - 2;
-	
-			if($p1 > -1 && $s0[$p1] === "\\") {
-				if($p2 > -1 && $s0[$p2] === "\\") {
-					$r = static::splitter($s2);
-					if(count($r) > 1) {
-						return [$s0 . $s1 . $r[0], $r[1]];
-					} else {
-						return [$s0 . $s1 . $r[0]];
-					}
-				} else {
-					return [mb_substr($s0, 0, -1, 'UTF-8') , $s1 . $s2];
-				}
-			} else {
-				return [$s0, $s1 . $s2];
-			}
+	private static $patt = '/(?:\[(?:\[|<|{))|(?:{(?:{|<|\?))/s';
+	private static function three_parts(string $str) {
+		preg_match(static::$patt, $str, $p1, PREG_OFFSET_CAPTURE);
+		$p1 = $p1[0][1] ?? -1;
+		switch($p1) {
+			case -1: return [null, null, $str];
+			case 0: return [null, '', $str];
+			case 1:
+			case 2:
+				return [
+					null,
+					substr($str, 0, $p1),
+					substr($str, $p1, null)
+				];
+			default:
+				$p2 = $p1 - 2;
+				return [
+					substr($str , 0, $p2),
+					substr($str, $p2, 2),
+					substr($str, $p1, null)
+				];
 		}
 	}
-	public static function parser($parts) {
-		$content = [];
-		$parts = static::splitter($parts);
-		$max_iter = -1;
-		while(count($parts) > 1 && ++$max_iter < 10) {
-			$content[] = [0, $parts[0]];
-			try {
-				$parts = View::$template_parser->parse($parts[1]);
-				$content[] = $parts[0];
-				$parts = static::splitter($parts[1]);
-			} catch (\Throwable $th) {
-				$last = &$content[count($content) - 1][1];
-				$last = $last . mb_substr($parts[1], 0, 2, 'UTF-8');
-				$parts = static::splitter(mb_substr($parts[1], 2, null, 'UTF-8'));
+	public static function parser($str) {
+		$final = [];
+		$push_txt = function ($txt) use (&$final) {
+			if($txt !== null && strlen($txt)) {
+				$final[] = [0, $txt];
+			}
+		};
+	
+		$p = static::three_parts($str);
+	
+		$lim = -1;
+		while($p[1] !== null && ++$lim < 50) {
+			$a = &$p[0]; $b = &$p[1]; $c = &$p[2];
+			// var_dump($p);
+			$parse = true;
+			$a ??= '';
+			if($b[1] === "\\") {
+				if($b === "\\\\") {
+					// Parse
+					$a .= $b;
+				} else {
+					//Dont parse
+					$parse = false;
+					$a .= $b[0];
+				}
+			} else {
+				// Parse
+				$a .= $b;
+			}
+			$txt = $p[0];
+			if($parse) {
+				try {
+					$p = \KPS\View::$template_parser->parse($c);
+					$push_txt($txt);
+					$final[] = $p[0];
+					$p = static::three_parts($p[1]);
+				} catch (\Throwable $th) {
+					$txt .= substr($c, 0, 2);
+					$p = static::three_parts(substr($c, 2));
+					$push_txt($txt);
+				}
+			} else {
+				$txt .= substr($c, 0, 2);
+				$p = static::three_parts(substr($c, 2));
+				$push_txt($txt);
 			}
 		}
-		$content[] = [0, $parts[0]];
-		return $content;
+		$push_txt($p[2]);
+		return $final;
 	}
 }
