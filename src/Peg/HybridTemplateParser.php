@@ -39,8 +39,7 @@ class HybridTemplateParser {
 	
 		$p = static::three_parts($str);
 	
-		$lim = -1;
-		while($p[1] !== null && ++$lim < 50) {
+		while($p[1] !== null) {
 			$a = &$p[0]; $b = &$p[1]; $c = &$p[2];
 			// var_dump($p);
 			$parse = true;
