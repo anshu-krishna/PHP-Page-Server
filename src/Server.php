@@ -153,11 +153,11 @@ final class Server {
 					}
 					switch($mode) {
 						case 0:
-							$rval = Lib::stringfiy($rval);
+							$rval = Lib::stringify($rval);
 							echo $esc ? Lib::html_esc($rval) : $rval;
 							break;
 						case 1:
-							$rval = Lib::stringfiy($rval);
+							$rval = Lib::stringify($rval);
 							echo Lib::html_esc($rval);
 							break;
 						case 2:

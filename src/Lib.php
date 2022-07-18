@@ -13,7 +13,7 @@ class Lib {
 		);
 	}
 
-	public static function stringfiy(mixed $value) : ?string {
+	public static function stringify(mixed $value) : ?string {
 		if(is_string($value)) { return $value; }
 		if(
 			$value === null
