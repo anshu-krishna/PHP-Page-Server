@@ -44,7 +44,7 @@ class HybridTemplateParser {
 			// var_dump($p);
 			$parse = true;
 			$a ??= '';
-			if($b[1] === "\\") {
+			if(($b[1] ?? null) === "\\") {
 				if($b === "\\\\") {
 					// Parse
 					$a .= $b;
