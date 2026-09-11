@@ -203,6 +203,8 @@ This matches:
 - `/xyz` → `xyz.php`
 - `/zyx` → `xyz.php`
 - `/xyz/pqr` → `pqr.php`
+- `/xyz/rst` → `rst.php`
+- `/zyx/pqr` → `pqr.php`
 - `/zyx/rst` → `rst.php`
 - `/about` → `about.php`
 
