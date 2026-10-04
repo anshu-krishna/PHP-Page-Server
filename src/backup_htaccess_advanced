@@ -1,0 +1,130 @@
+# ============================================================
+# APACHE (.htaccess)
+# ============================================================
+
+# Only run these rules if mod_rewrite is available.
+<IfModule mod_rewrite.c>
+
+	# Disable MultiViews so Apache does not automatically
+	# map URLs to files based on filename extensions.
+	Options -MultiViews
+
+	# Enable Apache's URL rewriting engine.
+	RewriteEngine On
+
+	# Optional: define the base URL/path for rewriting.
+	# Usually not needed, so it remains commented.
+	# RewriteBase /
+
+	# Continue only if the requested path is NOT an
+	# existing regular file.
+	#
+	# Existing files such as:
+	#   /style.css
+	#   /images/logo.png
+	# are served normally.
+	#
+	# Directories are NOT excluded, so existing directories
+	# will also be sent to index.php.
+	RewriteCond %{REQUEST_FILENAME} !-f
+
+	# Do not use !-d because existing directories should
+	# also be handled by index.php.
+	# RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Send every non-existing file/path to index.php.
+	#
+	# $1 = requested URL path
+	# QSA = preserve/append the original query parameters
+	# L   = stop processing further rewrite rules
+	#
+	# Example:
+	#   /anything?x=1&y=2
+	#
+	# becomes:
+	#   index.php?@__url__@=anything&x=1&y=2
+	RewriteRule ^(.+)$ index.php?@__url__@=$1 [QSA,L]
+
+</IfModule>
+
+
+# ============================================================
+# NGINX
+# ============================================================
+#
+# Nginx does NOT use .htaccess.
+#
+# Put the Nginx configuration in:
+#
+#   /etc/nginx/sites-available/your-site
+#
+# Example:
+#
+# server {
+#     listen 80;
+#     server_name example.com;
+#
+#     # Your website's document root.
+#     root /var/www/html;
+#
+#     # If the requested path is an existing FILE,
+#     # serve it directly.
+#     #
+#     # If it is a directory or does not exist,
+#     # continue to @rewrite_to_index.
+#     location / {
+#         try_files $uri @rewrite_to_index;
+#     }
+#
+#     # Send directories and non-existing paths to index.php.
+#     location @rewrite_to_index {
+#         rewrite ^(.+)$ /index.php?@__url__@=$1&$query_string last;
+#     }
+# }
+#
+# ------------------------------------------------------------
+# NGINX setup commands
+# ------------------------------------------------------------
+#
+# Create/edit the site configuration:
+#
+#   sudo nano /etc/nginx/sites-available/your-site
+#
+# Enable the site:
+#
+#   sudo ln -s /etc/nginx/sites-available/your-site \
+#       /etc/nginx/sites-enabled/your-site
+#
+# Test Nginx configuration:
+#
+#   sudo nginx -t
+#
+# Reload Nginx:
+#
+#   sudo systemctl reload nginx
+#
+# ------------------------------------------------------------
+# NGINX behavior
+# ------------------------------------------------------------
+#
+# Existing file:
+#
+#   /style.css
+#   -> /style.css
+#
+# Existing directory:
+#
+#   /some-directory/
+#   -> /index.php
+#
+# Non-existing path:
+#
+#   /anything
+#   -> /index.php?@__url__@=anything
+#
+# With query parameters:
+#
+#   /anything?x=1&y=2
+#   -> /index.php?@__url__@=anything&x=1&y=2
+#
+# ============================================================
